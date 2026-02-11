@@ -8,7 +8,6 @@ text area, menus, and resize handle.
 from gi.repository import Gtk, Gdk
 import builtins
 
-# Ensure a fallback for gettext `_` is available.
 if not hasattr(builtins, "_"):
     builtins._ = lambda s: s
 
@@ -16,6 +15,23 @@ class StickyUI:
     """
     A mixin for `StickyWindow` that handles the construction of the UI.
     """
+    def _get_contrasting_text_color(self, hex_bg_color: str) -> str:
+        """
+        Calculates whether black or white text is more readable on a given background color.
+
+        Args:
+            hex_bg_color: The background color in hexadecimal format (e.g., "#RRGGBB").
+
+        Returns:
+            "#000000" for black or "#FFFFFF" for white.
+        """
+        try:
+            hex_color = hex_bg_color.lstrip('#')
+            r, g, b = tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
+            luminance = (0.299 * r + 0.587 * g + 0.114 * b)
+            return "#000000" if luminance > 128 else "#FFFFFF"
+        except Exception:
+            return "#000000"
 
     def setup_header(self):
         """Creates the compact header bar containing window controls."""
@@ -28,7 +44,6 @@ class StickyUI:
         btn_add.connect("clicked", self._on_add_clicked)
         self.header_box.append(btn_add)
 
-        # The spacer is a draggable area for moving the window.
         spacer = Gtk.Box(hexpand=True)
         spacer.set_can_target(True)
         header_drag = Gtk.GestureDrag.new()
@@ -55,12 +70,12 @@ class StickyUI:
         Constructs the main popover menu for note color and print actions.
         """
         popover = Gtk.Popover()
-        main_vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=int(4 * self.scale))
-        main_vbox.add_css_class("menu-box")
-
+        self.menu_vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=int(4 * self.scale))
+        self.menu_vbox.add_css_class("menu-box")
+        
         lbl_color = Gtk.Label(label=builtins._("Color"), xalign=0)
         lbl_color.add_css_class("menu-label")
-        main_vbox.append(lbl_color)
+        self.menu_vbox.append(lbl_color)
 
         grid = Gtk.Grid(column_spacing=6, row_spacing=6)
         btn_size = int(22 * self.scale)
@@ -68,40 +83,45 @@ class StickyUI:
         for i, color in enumerate(self.config.get("palette", [])):
             b = Gtk.Button()
             b.set_size_request(btn_size, btn_size)
-            # Apply color swatch style via a dedicated CSS provider for the button.
             cp = Gtk.CssProvider()
-            cp.load_from_data(f"button {{ background-color: {color}; border-radius: 50%; }}".encode())
+            cp.load_from_data(f"button {{ background-color: {color}; border-radius: 50%; border: 1px solid rgba(0,0,0,0.2); }}".encode())
             b.get_style_context().add_provider(cp, Gtk.STYLE_PROVIDER_PRIORITY_USER)
             b.connect("clicked", lambda _, c=color: (self.apply_color(c), popover.popdown()))
             grid.attach(b, i % 4, i // 4, 1, 1)
-        main_vbox.append(grid)
+        self.menu_vbox.append(grid)
 
         sep = Gtk.Separator(orientation=Gtk.Orientation.HORIZONTAL, margin_top=4, margin_bottom=4)
-        main_vbox.append(sep)
+        self.menu_vbox.append(sep)
 
         # Customization Menu Item
-        box_custom = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
+        box_custom = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10, margin_top=5, margin_bottom=5, margin_start=5, margin_end=5)
         box_custom.append(Gtk.Image.new_from_icon_name("emblem-system-symbolic"))
-        box_custom.append(Gtk.Label(label=builtins._("Customize")))
-        btn_custom = Gtk.Button(child=box_custom, has_frame=False)
-        btn_custom.add_css_class("menu-row-btn")
-        btn_custom.connect("clicked", lambda _: (self.on_customization_clicked(None), popover.popdown()))
-        main_vbox.append(btn_custom)
+        lbl_custom = Gtk.Label(label=builtins._("Customize"))
+        box_custom.append(lbl_custom)
+        
+        click_custom = Gtk.GestureClick.new()
+        click_custom.connect("released", lambda *args: (self.on_customization_clicked(None), popover.popdown()))
+        box_custom.add_controller(click_custom)
+        self.menu_vbox.append(box_custom)
 
-        box_print = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
+        # Print Menu Item
+        box_print = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10, margin_top=5, margin_bottom=5, margin_start=5, margin_end=5)
         box_print.append(Gtk.Image.new_from_icon_name("printer-symbolic"))
-        box_print.append(Gtk.Label(label=builtins._("Print note")))
-        btn_print = Gtk.Button(child=box_print, has_frame=False)
-        btn_print.add_css_class("menu-row-btn")
-        btn_print.connect("clicked", lambda _: (self.on_print_clicked(None), popover.popdown()))
-        main_vbox.append(btn_print)
+        lbl_print = Gtk.Label(label=builtins._("Print note"))
+        box_print.append(lbl_print)
+        
+        click_print = Gtk.GestureClick.new()
+        click_print.connect("released", lambda *args: (self.on_print_clicked(None), popover.popdown()))
+        box_print.add_controller(click_print)
+        self.menu_vbox.append(box_print)
 
-        popover.set_child(main_vbox)
+        popover.set_child(self.menu_vbox)
         btn.set_popover(popover)
 
     def setup_text_color_popover(self, btn: Gtk.MenuButton):
         """Creates the popover for selecting text color."""
         popover = Gtk.Popover()
+        popover.add_css_class("color-popover")
         grid = Gtk.Grid(column_spacing=2, row_spacing=2, margin_top=4, margin_bottom=4, margin_start=4, margin_end=4)
         btn_size = int(18 * self.scale)
         
@@ -120,6 +140,7 @@ class StickyUI:
     def setup_font_size_popover(self, btn: Gtk.MenuButton):
         """Creates the popover for selecting font size."""
         popover = Gtk.Popover()
+        popover.add_css_class("color-popover")
         scrolled = Gtk.ScrolledWindow(max_content_height=200, propagate_natural_height=True)
         vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         
@@ -164,7 +185,6 @@ class StickyUI:
         self.buffer = self.text_view.get_buffer()
         self.buffer.connect("changed", self._on_buffer_changed)
 
-        # Attach the key controller directly to the text view.
         key_ctrl = Gtk.EventControllerKey.new()
         key_ctrl.connect("key-pressed", self._on_key_pressed)
         self.text_view.add_controller(key_ctrl)

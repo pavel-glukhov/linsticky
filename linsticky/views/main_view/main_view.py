@@ -33,7 +33,6 @@ class MainWindow(Adw.ApplicationWindow):
         css = """
                 flowbox { padding: 0px; background: transparent; }
                 flowboxchild { padding: 0px; margin: 0px; border: none; min-width: 0px; outline: none; }
-                window.background { background-color: #ffffff; } 
                 """
         css_provider.load_from_data(css.encode())
         Gtk.StyleContext.add_provider_for_display(Gdk.Display.get_default(), css_provider,

@@ -127,16 +127,13 @@ class StickyWindow(Adw.Window, StickyFormatting, StickyActions, StickyUI, Sticky
     def _update_ui_design(self, hex_color=None):
         """
         Updates the background color of the note.
-        
-        This method dynamically creates a CSS class for the specified color
-        and applies it to the main content box of the note.
         """
         if hex_color:
             self.current_color = hex_color.strip()
         
         bg_color = self.current_color or "#FFF59D"
         
-        # Remove any previously applied color classes to avoid conflicts.
+        # --- Update Main Note Body ---
         for c in self.main_box.get_css_classes():
             if c.startswith("note-color-"):
                 self.main_box.remove_css_class(c)
@@ -144,11 +141,23 @@ class StickyWindow(Adw.Window, StickyFormatting, StickyActions, StickyUI, Sticky
         color_class = f'note-color-{bg_color.replace("#", "")}'
         self.main_box.add_css_class(color_class)
         
+        # --- Update Global Styles ---
         style_provider = Gtk.CssProvider()
         style_provider.load_from_data(f"""
         .sticky-main-area.{color_class} {{
             background-color: {bg_color};
             border-radius: 12px;
+        }}
+        .sticky-window textview {{
+            color: #000000;
+            caret-color: #000000;
+        }}
+        .sticky-window textview text {{
+            color: #000000;
+        }}
+        .sticky-window .compact-header button, 
+        .sticky-window .compact-format-bar button {{
+            color: rgba(0, 0, 0, 0.8);
         }}
         """.encode('utf-8'))
         

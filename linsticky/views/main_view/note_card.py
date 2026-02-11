@@ -45,6 +45,7 @@ class NoteCard(Gtk.Box):
         self.pin_button = Gtk.Button()
         self.pin_button.set_has_frame(False)
         self.pin_button.add_css_class("flat")
+        self.pin_button.add_css_class("note-card-pin-button") # Add specific class
         self._update_pin_icon()
         header.append(self.pin_button)
         
@@ -61,8 +62,11 @@ class NoteCard(Gtk.Box):
         markup_text = self._generate_markup(segments)
 
         self.label = Gtk.Label()
+        self.label.add_css_class("note-card-label")
         self.label.set_use_markup(True)
-        self.label.set_markup(markup_text)
+        # Wrap the entire markup in a span to enforce a default dark color
+        final_markup = f'<span foreground="#000000">{markup_text}</span>'
+        self.label.set_markup(final_markup)
 
         self.label.set_wrap(True)
         self.label.set_wrap_mode(Pango.WrapMode.WORD_CHAR)
@@ -79,9 +83,14 @@ class NoteCard(Gtk.Box):
 
     def _update_pin_icon(self):
         """Updates the icon and tooltip of the pin button based on the note's pinned status."""
-        icon_name = "starred-symbolic" if self.is_pinned else "non-starred-symbolic"
-        self.pin_button.set_icon_name(icon_name)
-        self.pin_button.set_tooltip_text(_("Pin Note") if not self.is_pinned else _("Unpin Note"))
+        if self.is_pinned:
+            self.pin_button.set_icon_name("starred-symbolic")
+            self.pin_button.set_tooltip_text(_("Unpin Note"))
+            self.pin_button.add_css_class("pinned")
+        else:
+            self.pin_button.set_icon_name("non-starred-symbolic")
+            self.pin_button.set_tooltip_text(_("Pin Note"))
+            self.pin_button.remove_css_class("pinned")
 
     def on_pin_clicked(self, gesture, n_press, x, y):
         """
@@ -164,7 +173,20 @@ class NoteCard(Gtk.Box):
         """
         if not hex_color: hex_color = "#FFF59D"
         provider = Gtk.CssProvider()
-        css = f".sticky-paper-card {{ background-color: {hex_color}; border-radius: 0px; min-height: 50px; }}"
+        css = f"""
+        .sticky-paper-card {{ 
+            background-color: {hex_color}; 
+            border-radius: 0px; 
+            min-height: 50px; 
+        }}
+        .sticky-paper-card .note-card-pin-button image {{
+            color: rgba(0, 0, 0, 0.8);
+        }}
+        .sticky-paper-card .note-card-pin-button.pinned {{
+            border: 1px solid #000000;
+            border-radius: 4px;
+        }}
+        """
         provider.load_from_data(css.encode())
         self.card_canvas.get_style_context().add_provider(provider, Gtk.STYLE_PROVIDER_PRIORITY_USER)
 
