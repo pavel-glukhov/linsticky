@@ -42,12 +42,18 @@ class NoteCard(Gtk.Box):
         spacer = Gtk.Box(hexpand=True)
         header.append(spacer)
 
-        self.pin_button = Gtk.Button()
-        self.pin_button.set_has_frame(False)
-        self.pin_button.add_css_class("flat")
-        self.pin_button.add_css_class("note-card-pin-button") # Add specific class
+
+        self.pin_box = Gtk.Box()
+        self.pin_box.add_css_class("force-black-pin")
+        self.pin_box.set_valign(Gtk.Align.CENTER)
+        self.pin_box.set_margin_end(6)
+        self.pin_box.set_margin_top(6)
+        
+        self.pin_image = Gtk.Image()
+        self.pin_box.append(self.pin_image)
+        
         self._update_pin_icon()
-        header.append(self.pin_button)
+        header.append(self.pin_box)
         
         initial_content_raw = note["content"] or ""
         segments = []
@@ -64,7 +70,6 @@ class NoteCard(Gtk.Box):
         self.label = Gtk.Label()
         self.label.add_css_class("note-card-label")
         self.label.set_use_markup(True)
-        # Wrap the entire markup in a span to enforce a default dark color
         final_markup = f'<span foreground="#000000">{markup_text}</span>'
         self.label.set_markup(final_markup)
 
@@ -84,13 +89,13 @@ class NoteCard(Gtk.Box):
     def _update_pin_icon(self):
         """Updates the icon and tooltip of the pin button based on the note's pinned status."""
         if self.is_pinned:
-            self.pin_button.set_icon_name("starred-symbolic")
-            self.pin_button.set_tooltip_text(_("Unpin Note"))
-            self.pin_button.add_css_class("pinned")
+            self.pin_image.set_from_icon_name("starred-symbolic")
+            self.pin_box.set_tooltip_text(_("Unpin Note"))
+            self.pin_box.add_css_class("pinned")
         else:
-            self.pin_button.set_icon_name("non-starred-symbolic")
-            self.pin_button.set_tooltip_text(_("Pin Note"))
-            self.pin_button.remove_css_class("pinned")
+            self.pin_image.set_from_icon_name("non-starred-symbolic")
+            self.pin_box.set_tooltip_text(_("Pin Note"))
+            self.pin_box.remove_css_class("pinned")
 
     def on_pin_clicked(self, gesture, n_press, x, y):
         """
@@ -179,13 +184,6 @@ class NoteCard(Gtk.Box):
             border-radius: 0px; 
             min-height: 50px; 
         }}
-        .sticky-paper-card .note-card-pin-button image {{
-            color: rgba(0, 0, 0, 0.8);
-        }}
-        .sticky-paper-card .note-card-pin-button.pinned {{
-            border: 1px solid #000000;
-            border-radius: 4px;
-        }}
         """
         provider.load_from_data(css.encode())
         self.card_canvas.get_style_context().add_provider(provider, Gtk.STYLE_PROVIDER_PRIORITY_USER)
@@ -199,7 +197,7 @@ class NoteCard(Gtk.Box):
         click_pin = Gtk.GestureClick()
         click_pin.set_propagation_phase(Gtk.PropagationPhase.CAPTURE)
         click_pin.connect("released", self.on_pin_clicked)
-        self.pin_button.add_controller(click_pin)
+        self.pin_box.add_controller(click_pin)
 
         menu = Gtk.GestureClick(button=3)
         menu.connect("released", self._on_right_click)

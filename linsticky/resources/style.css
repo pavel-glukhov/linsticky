@@ -239,3 +239,11 @@ scrolledwindow scrollbar:hover {
     font-size: 10px;
     line-height: 1.1;
 }
+
+/* Custom Pin Box Styling */
+.force-black-pin {
+    color: #000000;
+}
+.force-black-pin image {
+    color: #000000;
+}
