@@ -42,7 +42,7 @@ class NoteCard(Gtk.Box):
         spacer = Gtk.Box(hexpand=True)
         header.append(spacer)
 
-
+        # Custom Pin Box (Box + Image) to avoid theme interference
         self.pin_box = Gtk.Box()
         self.pin_box.add_css_class("force-black-pin")
         self.pin_box.set_valign(Gtk.Align.CENTER)
@@ -70,6 +70,11 @@ class NoteCard(Gtk.Box):
         self.label = Gtk.Label()
         self.label.add_css_class("note-card-label")
         self.label.set_use_markup(True)
+        
+        label_provider = Gtk.CssProvider()
+        label_provider.load_from_data(b"label { color: #000000; }")
+        self.label.get_style_context().add_provider(label_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
+
         final_markup = f'<span foreground="#000000">{markup_text}</span>'
         self.label.set_markup(final_markup)
 

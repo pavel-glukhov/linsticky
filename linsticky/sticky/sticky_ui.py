@@ -28,6 +28,7 @@ class StickyUI:
         try:
             hex_color = hex_bg_color.lstrip('#')
             r, g, b = tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
+            # Using the luminance formula to determine brightness
             luminance = (0.299 * r + 0.587 * g + 0.114 * b)
             return "#000000" if luminance > 128 else "#FFFFFF"
         except Exception:
@@ -44,6 +45,7 @@ class StickyUI:
         btn_add.connect("clicked", self._on_add_clicked)
         self.header_box.append(btn_add)
 
+        # The spacer is a draggable area for moving the window.
         spacer = Gtk.Box(hexpand=True)
         spacer.set_can_target(True)
         header_drag = Gtk.GestureDrag.new()
@@ -142,13 +144,27 @@ class StickyUI:
         popover = Gtk.Popover()
         popover.add_css_class("color-popover")
         scrolled = Gtk.ScrolledWindow(max_content_height=200, propagate_natural_height=True)
-        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2)
         
         for size in self.config.get("font_sizes", []):
-            b = Gtk.Button(label=str(size), has_frame=False)
-            b.add_css_class("format-btn-tiny")
-            b.connect("clicked", lambda _, s=size: (self.apply_font_size(s), popover.popdown()))
-            vbox.append(b)
+            # Use Box + Label + GestureClick to ensure theme compliance for text color
+            row_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
+            row_box.set_size_request(-1, 30) # Ensure a reasonable hit area height
+            
+            lbl = Gtk.Label(label=str(size))
+            lbl.set_margin_start(10)
+            lbl.set_margin_end(10)
+            row_box.append(lbl)
+            
+            click = Gtk.GestureClick.new()
+            click.connect("released", lambda *args, s=size: (self.apply_font_size(s), popover.popdown()))
+            row_box.add_controller(click)
+            
+            ctrl = Gtk.EventControllerMotion()
+            ctrl.connect("enter", lambda c, x, y, b=row_box: b.set_state_flags(Gtk.StateFlags.PRELIGHT, False))
+            ctrl.connect("leave", lambda c, b=row_box: b.unset_state_flags(Gtk.StateFlags.PRELIGHT))
+            row_box.add_controller(ctrl)
+            vbox.append(row_box)
             
         scrolled.set_child(vbox)
         popover.set_child(scrolled)
@@ -185,6 +201,7 @@ class StickyUI:
         self.buffer = self.text_view.get_buffer()
         self.buffer.connect("changed", self._on_buffer_changed)
 
+        # Attach the key controller directly to the text view.
         key_ctrl = Gtk.EventControllerKey.new()
         key_ctrl.connect("key-pressed", self._on_key_pressed)
         self.text_view.add_controller(key_ctrl)

@@ -46,7 +46,6 @@ class ApplicationManager:
 
     def setup_ui_settings(self):
         """Applies UI scaling, loads custom CSS, and sets up the icon theme."""
-        # Apply UI scaling based on configuration.
         try:
             raw_scale = self.config.get("ui_scale", 1.0)
             scale = float(str(raw_scale)[:4])
@@ -56,7 +55,6 @@ class ApplicationManager:
             scale = 1.0
         self._apply_ui_scale(scale)
         
-        # Load the main stylesheet.
         self._load_css()
 
         # Add the application's icon directory to the default icon theme.
@@ -262,5 +260,4 @@ class ApplicationManager:
                 win = self.main_window.stickies.get(note_id)
                 if win: 
                     win.close()
-            # Finally, destroy the main window.
             self.main_window.destroy()
