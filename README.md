@@ -15,6 +15,10 @@ _______________
 > If you are looking for a **legacy version**, please use the original **PyQt6 version (v1.4.1)** available in the  
 > 👉 [legacy branch](https://github.com/pavel-glukhov/linsticky/tree/legacy).
 
+![example of app](https://github.com/pavel-glukhov/linsticky/blob/gtk/pic/example_2.0.0.png)
+
+
+
 ## 📑 Table of Contents
 - [Features](#-features)
 - [Installation](#installation)
@@ -24,7 +28,6 @@ _______________
 - [Backend & Positioning](#%EF%B8%8F-backend--positioning)
 - [Credits](#credits)
 
-![example of app](https://github.com/pavel-glukhov/linsticky/blob/gtk/pic/example_2.0.0.png)
 
 ## ✨ Features
 
