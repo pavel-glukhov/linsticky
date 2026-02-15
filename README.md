@@ -60,7 +60,7 @@ You can download the latest .deb package from the [Releases page](https://github
 
 ```bash
 # 1. Download the package
-curl -O -L https://github.com/pavel-glukhov/linsticky/releases/download/io.linsticky.app_2.0.2_all.deb
+curl -O -L https://github.com/pavel-glukhov/linsticky/releases/download/v2.0.2/io.linsticky.app_2.0.2_all.deb
 
 # 2. Install dependencies
 sudo apt update
