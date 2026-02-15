@@ -25,7 +25,6 @@ _______________
   - [Snap Store (Recommended)](#snap-store-recommended)
   - [DEB Package](#deb-package)
 - [Troubleshooting Localization](#troubleshooting-localization)
-- [Backend & Positioning](#%EF%B8%8F-backend--positioning)
 - [Credits](#credits)
 
 
@@ -94,10 +93,6 @@ If the app's language doesn't change after selection:
 3.  **Restart:** Restart the application.
 
 Check available locales: `locale -a`
-
-## 🛠️ Backend & Positioning
-By default, the app runs on Wayland. If you want your notes to remember their exact screen coordinates (X/Y), 
-open Settings within the app, switch the backend to X11, and restart the application.
 
 ## Credits
 
