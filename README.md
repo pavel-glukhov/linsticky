@@ -2,7 +2,7 @@
 
 Modern sticky notes application built with Python, GTK4, and Libadwaita for Linux.
 
-Version: 2.0.2
+### **Version**: 2.0.2
 _______________
 
 > [!IMPORTANT]
@@ -15,7 +15,14 @@ _______________
 > If you are looking for a **legacy version**, please use the original **PyQt6 version (v1.4.1)** available in the  
 > 👉 [legacy branch](https://github.com/pavel-glukhov/linsticky/tree/legacy).
 
-
+## 📑 Table of Contents
+- [Features](#-features)
+- [Installation](#installation)
+  - [Snap Store (Recommended)](#snap-store-recommended)
+  - [DEB Package](#deb-package)
+- [Troubleshooting Localization](#troubleshooting-localization)
+- [Backend & Positioning](#%EF%B8%8F-backend--positioning)
+- [Credits](#credits)
 
 ![example of app](https://github.com/pavel-glukhov/linsticky/blob/gtk/pic/example_2.0.0.png)
 
