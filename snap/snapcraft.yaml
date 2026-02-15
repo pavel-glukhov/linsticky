@@ -7,56 +7,72 @@ description: |
               LinSticky is a simple, modern, and lightweight sticky notes application designed for Linux. It provides a clean way to keep your reminders, tasks, and ideas right on your desktop.
               
               ✨ Key Features:
-              
-                  📝 Smart Notes: A sleek, minimalist interface built with Python and GTK4 for maximum focus.
-              
-                  📌 Pin to Top: Keep your essential tasks anchored and always visible.
-              
-                  🎨 Personalization: Organize your thoughts with a custom color palette.
-              
-                  ✍️ Formatting: Full support for rich text preservation (bold, italics, lists).
-              
-                  🐧 Native Experience: Built with Libadwaita to look perfect on GNOME and other modern desktops.
-              
-                  🌍 Multilingual: Fully localized in English, Español, Deutsch, Français, Русский, Қазақша, and more.
+              📝 Smart Notes: A sleek, minimalist interface built with Python and GTK4 for maximum focus.
+              🎨 Personalization: Organize your thoughts with a custom color palette.
+              🌙 Night Theme: Full support for dark mode.
+              ✍️ Formatting: Full support for rich text preservation (bold, italics, lists, change color and font size).
+              🐧 Native Experience: Built with Libadwaita to look perfect on GNOME and other modern desktops.
+              🌍 Multilingual: Fully localized in English, Español, Deutsch, Français, Русский, Қазақша, and more.
               
               If you are looking for a simple "post-it" style experience for Linux, LinSticky is the perfect tool for your daily workflow.
 
-grade: devel
+grade: stable
 confinement: strict
 icon: linsticky/resources/icons/app.png
 
 parts:
   linsticky:
-    plugin: dump
+    plugin: python
     source: .
-    stage:
+    stage-packages:
+      - python3-gi
+      - python3-cairo
+      - gir1.2-adw-1
+      - gir1.2-ayatanaappindicator3-0.1
+    prime:
       - -build_deb_package.sh
       - -compile_translations.sh
       - -create_translation.sh
       - -generate_translations.sh
       - -update_translation.sh
-      - -linsticky_2.0.0-beta3_all.deb
-      - -linsticky_deb
-      - -parts
-      - -prime
-      - -stage
-      - -.venv
-      - -.idea
+      - -*.deb
+      - -venv
       - -.git
       - -__pycache__
-    stage-packages:
-      - python3
-      - python3-gi
-      - python3-cairo
-      - gir1.2-adw-1
-      - gir1.2-ayatanaappindicator3-0.1
+      - -.idea
+      - -.venv
+      - -pic
+      - -stage
+      - -overlay
+      - -temp_mount
+      - -linsticky_deb
+      - -requirements.txt
+      - -support.md
+      - -README.md
+      - -.gitignore
+      - -LICENSE
 
     override-prime: |
       craftctl default
       mkdir -p $CRAFT_PRIME/usr/bin
       if [ ! -f "$CRAFT_PRIME/usr/bin/python3" ]; then
         ln -s /usr/bin/python3 $CRAFT_PRIME/usr/bin/python3
+      fi
+      # Ensure the desktop file is copied to the correct location
+      mkdir -p $CRAFT_PRIME/meta/gui
+      cp $CRAFT_PART_SRC/snap/gui/io.linsticky.app.desktop $CRAFT_PRIME/meta/gui/
+      cp $CRAFT_PART_SRC/snap/gui/app.png $CRAFT_PRIME/meta/gui/
+      
+      # Manually copy the source code to the expected location if the python plugin didn't do it as expected
+      # This is a fallback to ensure the files are present
+      mkdir -p $CRAFT_PRIME/lib/python3.12/site-packages/linsticky
+      cp -r $CRAFT_PART_SRC/linsticky/* $CRAFT_PRIME/lib/python3.12/site-packages/linsticky/
+      
+      # Also copy the config and resources directories if they are outside the linsticky package
+      # Based on the project structure, they seem to be inside, but let's be safe
+      if [ -d "$CRAFT_PART_SRC/config" ]; then
+          mkdir -p $CRAFT_PRIME/lib/python3.12/site-packages/config
+          cp -r $CRAFT_PART_SRC/config/* $CRAFT_PRIME/lib/python3.12/site-packages/config/
       fi
 
 slots:
@@ -67,10 +83,11 @@ slots:
 
 apps:
   linsticky:
-    command: usr/bin/python3 $SNAP/linsticky/main.py
-    desktop: snap/gui/io.linsticky.app.desktop
+    command: bin/python3 $SNAP/lib/python3.12/site-packages/linsticky/main.py
+    desktop: meta/gui/io.linsticky.app.desktop
     extensions:
       - gnome
+    common-id: io.linsticky.app
     slots:
       - dbus-linsticky
     plugs:
@@ -78,3 +95,5 @@ apps:
       - unity7
       - gsettings
       - network
+      - wayland
+      - x11

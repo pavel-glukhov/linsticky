@@ -2,18 +2,17 @@
 
 Modern sticky notes application built with Python, GTK4, and Libadwaita for Linux.
 
-Version: 2.0.0-beta3
+Version: 2.0.2
 _______________
 
 > [!IMPORTANT]
-> **This is the new GTK4/Libadwaita version and it is a BETA release.**  
-> It is under active development and may contain bugs or incomplete features.  
+> **This is the new GTK4/Libadwaita version.**  
 >  
 > ⚠️ **Backward compatibility notice:**  
 > This version is **NOT compatible with stickers created in previous versions** (PyQt6 v1.x).  
 > Existing stickers **will not be migrated automatically**, so please **save or export any important text in advance** before installing this version.  
 >  
-> If you are looking for a **stable version**, please use the original **PyQt6 version (v1.4.1)** available in the  
+> If you are looking for a **legacy version**, please use the original **PyQt6 version (v1.4.1)** available in the  
 > 👉 [legacy branch](https://github.com/pavel-glukhov/linsticky/tree/legacy).
 
 
@@ -24,8 +23,6 @@ _______________
 
 - 📝 Smart Sticky Notes
 Create, edit, and organize your notes in a clean, distraction-free interface designed for daily use.
-- 📌 Pinned Notes
-Pin important notes to the top of the list so they are always within reach.
 - 🎨 Custom Color Palette
 Personalize your notes by choosing colors that match your workflow and mood.
 - ✍️ Rich Text Preservation
@@ -43,33 +40,41 @@ Use the app in multiple languages, including:
   - Қазақша
 - 🖥️ Modern GNOME Experience
 A refreshed interface that follows current GNOME / Adwaita design guidelines for a native look and feel.
+- Support of dark theme.
 
-## Download:
-You can download the beta deb package here:
-https://github.com/pavel-glukhov/linsticky/releases/tag/v2.0.0-beta3
-______________________________________________________________________________________
+## Installation
 
-## Installation:
+### Snap Store (Recommended)
 
-To install version 2.0.0-beta3, run the following commands in your terminal:
+The easiest way to install LinSticky is via the Snap Store:
+
+[![Get it from the Snap Store](https://snapcraft.io/static/images/badges/en/snap-store-black.svg)](https://snapcraft.io/linsticky)
+
+```bash
+sudo snap install linsticky
+```
+
+### DEB Package
+
+You can download the latest .deb package from the [Releases page](https://github.com/pavel-glukhov/linsticky/releases).
 
 ```bash
 # 1. Download the package
-curl -O -L https://github.com/pavel-glukhov/linsticky/releases/download/v2.0.0-beta3/linsticky_2.0.0-beta3_all.deb
+curl -O -L https://github.com/pavel-glukhov/linsticky/releases/download/io.linsticky.app_2.0.2_all.deb
 
-# 2. Update and install system dependencies (GTK4 & Libadwaita)
+# 2. Install dependencies
 sudo apt update
 sudo apt install -y python3-gi gir1.2-gtk-4.0 gir1.2-adw-1 gir1.2-gtk-3.0 gir1.2-ayatanaappindicator3-0.1 gettext
 
 # 3. Install the package
-sudo dpkg -i linsticky_2.0.0-beta3_all.deb
-sudo apt-get install -f
+sudo dpkg -i io.linsticky.app_2.0.2_all.deb
 ```
+
 ## Troubleshooting Localization
 
 If the app's language doesn't change after selection:
 1.  **Install Language Pack:**
-2. ```sh
+    ```sh
     sudo apt install language-pack-[lang_code] 
     ```
 2.  **Generate Locale:**
@@ -81,27 +86,8 @@ If the app's language doesn't change after selection:
 Check available locales: `locale -a`
 
 ## 🛠️ Backend & Positioning
-
 By default, the app runs on Wayland. If you want your notes to remember their exact screen coordinates (X/Y), 
 open Settings within the app, switch the backend to X11, and restart the application.
-
-## Self build and Install (.deb package)
-
-If you want to build the package from source:
-```bash
-# Clone the repository
-git clone https://github.com/pavel-glukhov/linsticky.git
-cd linsticky
-
-# Make the script executable
-chmod +x build_deb_package.sh
-
-# Run the package build
-./build_deb_package.sh
-
-# Install the generated package
-sudo apt install ./linsticky_<VERSION>_all.deb
-```
 
 ## Credits
 
