@@ -2,7 +2,7 @@
 
 Modern sticky notes application built with Python, GTK4, and Libadwaita for Linux.
 
-### **Version**: 2.0.2
+### **Version**: 2.0.3
 _______________
 
 > [!IMPORTANT]
@@ -69,14 +69,14 @@ You can download the latest .deb package from the [Releases page](https://github
 
 ```bash
 # 1. Download the package
-curl -O -L https://github.com/pavel-glukhov/linsticky/releases/download/v2.0.2/io.linsticky.app_2.0.2_all.deb
+curl -O -L https://github.com/pavel-glukhov/linsticky/releases/download/v2.0.3/io.linsticky.app_2.0.3_all.deb
 
 # 2. Install dependencies
 sudo apt update
 sudo apt install -y python3-gi gir1.2-gtk-4.0 gir1.2-adw-1 gir1.2-gtk-3.0 gir1.2-ayatanaappindicator3-0.1 gettext
 
 # 3. Install the package
-sudo dpkg -i io.linsticky.app_2.0.2_all.deb
+sudo dpkg -i io.linsticky.app_2.0.3_all.deb
 ```
 
 ## Troubleshooting Localization
