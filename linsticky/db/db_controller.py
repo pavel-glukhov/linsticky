@@ -1,4 +1,5 @@
 import sqlite3
+import os
 from datetime import datetime
 from config.config import get_app_paths
 from config.config_manager import ConfigManager
@@ -13,6 +14,9 @@ class NotesDB:
         Args:
             path (str): The absolute path to the SQLite database file.
         """
+        db_dir = os.path.dirname(path)
+        if not os.path.exists(db_dir):
+            os.makedirs(db_dir, exist_ok=True)
         self.conn = sqlite3.connect(path)
         self.conn.row_factory = sqlite3.Row
         self._create_table()

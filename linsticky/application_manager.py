@@ -86,7 +86,7 @@ class ApplicationManager:
         }}
         """
         provider = Gtk.CssProvider()
-        provider.load_from_data(custom_css.encode())
+        provider.load_from_string(custom_css)
         Gtk.StyleContext.add_provider_for_display(
             Gdk.Display.get_default(),
             provider,

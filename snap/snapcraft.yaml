@@ -1,6 +1,6 @@
 name: linsticky
 base: core24
-version: '2.0.2'
+version: '2.0.3'
 summary: Lightweight and elegant sticky notes for your Linux desktop.
 license: MIT
 description: |

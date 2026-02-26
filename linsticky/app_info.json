@@ -1,7 +1,7 @@
 {
     "service_name": "io.linsticky.app",
     "app_name": "LinSticky",
-    "version": "2.0.2",
+    "version": "2.0.3",
     "author": "Pavel Glukhov",
     "email": "glukhov.p@gmail.com",
     "website": "https://github.com/pavel-glukhov/linsticky",
