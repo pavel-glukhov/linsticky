@@ -1,8 +1,6 @@
 import sqlite3
 import os
 from datetime import datetime
-from config.config import get_app_paths
-from config.config_manager import ConfigManager
 
 
 class NotesDB:
@@ -180,6 +178,11 @@ class NotesDB:
         """
         cur = self.conn.execute("SELECT * FROM notes WHERE deleted=1")
         return cur.fetchall()
+
+    def empty_trash(self):
+        """Permanently deletes every note that is in the trash, in one transaction."""
+        with self.conn:
+            self.conn.execute("DELETE FROM notes WHERE deleted=1")
 
     def restore_from_trash(self, note_id: int):
         """

@@ -42,6 +42,14 @@ class TrashView(Gtk.Box):
 
         # --- Content ---
         self.flowbox = Gtk.FlowBox(valign=Gtk.Align.START, selection_mode=Gtk.SelectionMode.NONE)
+        self.flowbox.set_homogeneous(False)
+        self.flowbox.set_max_children_per_line(1)
+        self.flowbox.set_min_children_per_line(1)
+        self.flowbox.set_halign(Gtk.Align.FILL)
+        self.flowbox.set_column_spacing(0)
+        self.flowbox.set_row_spacing(10)
+        self.flowbox.set_margin_top(10); self.flowbox.set_margin_bottom(10)
+        self.flowbox.set_margin_start(10); self.flowbox.set_margin_end(10)
         scrolled = Gtk.ScrolledWindow(child=self.flowbox, vexpand=True)
         scrolled.set_has_frame(False)
         self.append(scrolled)
@@ -65,16 +73,6 @@ class TrashView(Gtk.Box):
         """Refreshes the list of deleted notes from the database."""
         while child := self.flowbox.get_first_child():
             self.flowbox.remove(child)
-
-        self.flowbox.set_homogeneous(False)
-        self.flowbox.set_max_children_per_line(1)
-        self.flowbox.set_min_children_per_line(1)
-        self.flowbox.set_halign(Gtk.Align.FILL)
-        self.flowbox.set_valign(Gtk.Align.START)
-        self.flowbox.set_column_spacing(0)
-        self.flowbox.set_row_spacing(10)
-        self.flowbox.set_margin_top(10); self.flowbox.set_margin_bottom(10)
-        self.flowbox.set_margin_start(10); self.flowbox.set_margin_end(10)
 
         trash_items = self.db.all_trash()
 
@@ -153,7 +151,6 @@ class TrashView(Gtk.Box):
     def _on_empty_trash_confirm(self, dialog, response_id):
         """Callback for the empty trash confirmation dialog."""
         if response_id == "empty":
-            for note in self.db.all_trash():
-                self.db.delete_permanently(note['id'])
+            self.db.empty_trash()
             self.refresh_list()
         dialog.close()

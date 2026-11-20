@@ -86,11 +86,9 @@ class StickyApp(Adw.Application):
     window management, and handling system signals for graceful shutdown.
     It inherits from Adw.Application to ensure proper integration with the GNOME desktop.
     """
-    APP_INFO = load_app_info()
-
     def __init__(self):
         """Initializes the application, database, and the core application manager."""
-        super().__init__(application_id=self.APP_INFO.get('service_name'))
+        super().__init__(application_id=APP_ID)
         self.config = ConfigManager.load()
         self.db = NotesDB(path=self.config.get("db_path"))
         self.app_manager = ApplicationManager(self, self.db, self.config)
@@ -162,7 +160,6 @@ def acquire_lock():
 
 if __name__ == "__main__":
     # Set application metadata for the desktop environment.
-    APP_INFO = load_app_info()
     GLib.set_prgname(APP_INFO.get('service_name'))
     GLib.set_application_name(APP_INFO.get('app_name'))
     

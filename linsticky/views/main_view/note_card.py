@@ -1,9 +1,8 @@
-import json
-import html as html_lib
 from gi.repository import Gtk, Pango
 import builtins
 
 import theme
+from content import codec, render
 
 _ = builtins._
 
@@ -57,15 +56,7 @@ class NoteCard(Gtk.Box):
         self._update_pin_icon()
         header.append(self.pin_box)
         
-        initial_content_raw = note["content"] or ""
-        segments = []
-        try:
-            segments = json.loads(bytes.fromhex(initial_content_raw).decode('utf-8'))
-        except (ValueError, TypeError, json.JSONDecodeError):
-            try:
-                segments = json.loads(initial_content_raw)
-            except (ValueError, TypeError, json.JSONDecodeError):
-                segments = [{"text": initial_content_raw, "tags": []}]
+        segments = codec.decode(note["content"])
 
         self.label = Gtk.Label()
         # Black text color comes from the shared stylesheet (see theme.py).
@@ -119,65 +110,8 @@ class NoteCard(Gtk.Box):
 
     def set_segments(self, segments: list[dict]):
         """Renders the given content segments into the preview label."""
-        markup_text = self._generate_markup(segments)
+        markup_text = render.segments_to_pango(segments, max_lines=5)
         self.label.set_markup(f'<span foreground="#000000">{markup_text}</span>')
-
-    def _generate_markup(self, segments: list[dict]) -> str:
-        """
-        Generates Pango markup from a list of text segments and their tags.
-        Limits the output to 5 lines for card preview.
-        Args:
-            segments (list[dict]): A list of dictionaries, each containing 'text' and 'tags'.
-        Returns:
-            str: The generated Pango markup string.
-        """
-        if not segments: return ""
-
-        full_markup = ""
-        line_count = 0
-
-        for seg in segments:
-            text = seg.get("text", "")
-            lines_in_seg = text.split('\n')
-            if line_count >= 5:
-                break
-            if line_count + len(lines_in_seg) - 1 >= 5:
-                allowed = 5 - line_count
-                text = "\n".join(lines_in_seg[:allowed])
-                line_count = 5
-            else:
-                line_count += len(lines_in_seg) - 1
-
-            safe_text = html_lib.escape(text)
-
-            opening_tags = []
-            closing_tags = []
-            tags = seg.get("tags", [])
-            for tag in tags:
-                if tag == "bold":
-                    opening_tags.append("<b>")
-                    closing_tags.insert(0, "</b>")
-                elif tag == "italic":
-                    opening_tags.append("<i>")
-                    closing_tags.insert(0, "</i>")
-                elif tag == "underline":
-                    opening_tags.append("<u>")
-                    closing_tags.insert(0, "</u>")
-                elif tag == "strikethrough":
-                    opening_tags.append("<s>")
-                    closing_tags.insert(0, "</s>")
-                elif tag.startswith("text_color_"):
-                    c = tag.replace("text_color_", "")
-                    opening_tags.append(f'<span foreground="{c}">')
-                    closing_tags.insert(0, "</span>")
-                elif tag.startswith("font_size_"):
-                    s = tag.replace("font_size_", "")
-                    opening_tags.append(f'<span size="{s}pt">')
-                    closing_tags.insert(0, "</span>")
-            
-            full_markup += "".join(opening_tags) + safe_text + "".join(closing_tags)
-
-        return full_markup.rstrip()
 
     def update_color(self, hex_color: str):
         """

@@ -5,8 +5,9 @@ This module provides methods for loading, saving, and printing note data.
 It handles the serialization of the text buffer's content and formatting
 into a JSON structure suitable for database storage.
 """
-import json
 from gi.repository import Gtk, GLib, Pango, PangoCairo
+
+from content import codec
 from .customization_dialog import CustomizationDialog
 
 
@@ -34,22 +35,8 @@ class StickyActions:
 
         self._loading = True
 
-        content = row["content"] or ""
         self.buffer.set_text("")
-
-        try:
-            # New format: JSON string stored as a hex-encoded blob.
-            segments = json.loads(bytes.fromhex(content).decode('utf-8'))
-            iter_pos = self.buffer.get_start_iter()
-            for seg in segments:
-                text, tags = seg.get("text", ""), seg.get("tags", [])
-                if tags:
-                    self.buffer.insert_with_tags_by_name(iter_pos, text, *tags)
-                else:
-                    self.buffer.insert(iter_pos, text)
-        except (ValueError, TypeError):
-            # Fallback for legacy plain text format.
-            self.buffer.set_text(content.replace("<br>", "\n"))
+        self._insert_segments(codec.decode(row["content"]))
 
         # Restore window state.
         self.apply_color(row["color"] or "#FFF59D")
@@ -59,6 +46,17 @@ class StickyActions:
         self.saved_y = row['y'] or 300
 
         self._loading = False
+
+    def _insert_segments(self, segments: list[dict]):
+        """Inserts segments at the end of the buffer, skipping unknown tags."""
+        iter_pos = self.buffer.get_end_iter()
+        for seg in segments:
+            text = seg["text"]
+            tags = [t for t in seg["tags"] if self.tag_table.lookup(t)]
+            if tags:
+                self.buffer.insert_with_tags_by_name(iter_pos, text, *tags)
+            else:
+                self.buffer.insert(iter_pos, text)
 
     def save(self, force: bool = False):
         """
@@ -78,7 +76,7 @@ class StickyActions:
         try:
             # Get the raw buffer data and encode it for database storage.
             segments = self._get_buffer_segments()
-            hex_data = json.dumps(segments).encode('utf-8').hex()
+            hex_data = codec.encode(segments)
             
             w = self.get_width() if self.get_visible() else self.saved_width
             h = self.get_height() if self.get_visible() else self.saved_height

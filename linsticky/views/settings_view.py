@@ -6,6 +6,11 @@ import theme
 
 _ = builtins._
 
+def _rgba_to_hex(rgba: Gdk.RGBA) -> str:
+    """Converts a Gdk.RGBA into an upper-case #RRGGBB string."""
+    return f"#{int(rgba.red*255):02x}{int(rgba.green*255):02x}{int(rgba.blue*255):02x}".upper()
+
+
 class SettingsView(Gtk.Box):
     """
     A Gtk.Box widget that serves as the settings interface for the application.
@@ -227,8 +232,7 @@ class SettingsView(Gtk.Box):
             index (int): The index of the color in the palette that was edited.
         """
         try:
-            rgba = dialog.choose_rgba_finish(result)
-            hex_color = f"#{int(rgba.red*255):02x}{int(rgba.green*255):02x}{int(rgba.blue*255):02x}".upper()
+            hex_color = _rgba_to_hex(dialog.choose_rgba_finish(result))
             self.config["palette"][index] = hex_color
             self._set_button_color(self.palette_buttons[index], hex_color)
         except Exception as e:
@@ -244,8 +248,7 @@ class SettingsView(Gtk.Box):
             index (int): The index of the color in the palette that was edited.
         """
         if response == Gtk.ResponseType.OK:
-            rgba = dialog.get_rgba()
-            hex_color = f"#{int(rgba.red*255):02x}{int(rgba.green*255):02x}{int(rgba.blue*255):02x}".upper()
+            hex_color = _rgba_to_hex(dialog.get_rgba())
             self.config["palette"][index] = hex_color
             self._set_button_color(self.palette_buttons[index], hex_color)
         dialog.destroy()

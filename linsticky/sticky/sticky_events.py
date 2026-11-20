@@ -28,9 +28,9 @@ class StickyEvents:
 
     def _on_close_clicked(self, button: Gtk.Button):
         """
-        Handles the 'close' button click, ensuring the note is saved before closing.
+        Handles the 'close' button click. The note is saved by the
+        close-request handler, so no separate save is needed here.
         """
-        self.save()
         self.close()
 
     def _on_resize_pressed(self, gesture: Gtk.GestureClick, n_press: int, x: float, y: float):
