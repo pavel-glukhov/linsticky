@@ -257,3 +257,32 @@ msgstr "某些更改需要重启应用程序才能完全生效。"
 # /linsticky/views/settings_view.py:324
 msgid "OK"
 msgstr "确定"
+
+# linsticky/sticky/sticky_markdown.py
+msgid "Markdown"
+msgstr "Markdown"
+
+# linsticky/views/settings_view.py
+# linsticky/sticky/customization_dialog.py
+msgid "Markdown mode"
+msgstr "Markdown 模式"
+
+# linsticky/sticky/sticky_markdown.py
+msgid "Edit (Ctrl+E)"
+msgstr "编辑 (Ctrl+E)"
+
+# linsticky/sticky/sticky_markdown.py
+msgid "Preview (Ctrl+E)"
+msgstr "预览 (Ctrl+E)"
+
+# linsticky/sticky/sticky_markdown.py
+msgid "Convert to Markdown?"
+msgstr "转换为 Markdown？"
+
+# linsticky/sticky/sticky_markdown.py
+msgid "Underline, text colors and font sizes have no Markdown equivalent and will be removed."
+msgstr "下划线、文字颜色和字号在 Markdown 中没有对应格式，将被移除。"
+
+# linsticky/sticky/sticky_markdown.py
+msgid "Convert"
+msgstr "转换"

@@ -44,7 +44,8 @@ class NotesDB:
                                   deleted_at TEXT,
                                   always_on_top INTEGER DEFAULT 0,
                                   is_open INTEGER DEFAULT 0,
-                                  is_pinned INTEGER DEFAULT 0
+                                  is_pinned INTEGER DEFAULT 0,
+                                  is_markdown INTEGER DEFAULT 0
                               )
                               """)
 
@@ -72,6 +73,8 @@ class NotesDB:
                 self.conn.execute("ALTER TABLE notes ADD COLUMN h INTEGER DEFAULT 300")
             if "is_pinned" not in columns:
                 self.conn.execute("ALTER TABLE notes ADD COLUMN is_pinned INTEGER DEFAULT 0")
+            if "is_markdown" not in columns:
+                self.conn.execute("ALTER TABLE notes ADD COLUMN is_markdown INTEGER DEFAULT 0")
 
     def add(self, title: str = None, content: str = "",
             x: int = 300, y: int = 200,
@@ -218,6 +221,16 @@ class NotesDB:
         """
         with self.conn:
             self.conn.execute("UPDATE notes SET color = ? WHERE id = ?", (color, note_id))
+
+    def set_markdown(self, note_id: int, enabled: bool):
+        """
+        Switches a note between rich text and Markdown mode.
+        Args:
+            note_id (int): The ID of the note.
+            enabled (bool): True for Markdown mode.
+        """
+        with self.conn:
+            self.conn.execute("UPDATE notes SET is_markdown=? WHERE id=?", (1 if enabled else 0, note_id))
 
     def set_open_state(self, note_id: int, state: int):
         """

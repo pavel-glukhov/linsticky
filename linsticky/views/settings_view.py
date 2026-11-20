@@ -150,7 +150,8 @@ class SettingsView(Gtk.Box):
             ("bold", _("Bold (B)")), ("italic", _("Italic (I)")),
             ("underline", _("Underline (U)")), ("strikethrough", _("Strikethrough (S)")),
             ("list", _("Bullet List")),
-            ("text_color", _("Text Color")), ("font_size", _("Font Size"))
+            ("text_color", _("Text Color")), ("font_size", _("Font Size")),
+            ("markdown", _("Markdown mode")),
         ]
         current_fmt = self.config["formatting"]
         for key, name in buttons_to_toggle:

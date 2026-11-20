@@ -50,6 +50,7 @@ class CustomizationDialog(Gtk.Window):
             ("list", builtins._("Bullet List")),
             ("text_color", builtins._("Text Color")),
             ("font_size", builtins._("Font Size")),
+            ("markdown", builtins._("Markdown mode")),
         ]
 
         list_box = Gtk.ListBox()

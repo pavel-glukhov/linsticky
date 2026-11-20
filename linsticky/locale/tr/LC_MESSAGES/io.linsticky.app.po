@@ -322,3 +322,32 @@ msgstr ""
 # /linsticky/views/settings_view.py:324
 msgid "OK"
 msgstr "Tamam"
+
+# linsticky/sticky/sticky_markdown.py
+msgid "Markdown"
+msgstr "Markdown"
+
+# linsticky/views/settings_view.py
+# linsticky/sticky/customization_dialog.py
+msgid "Markdown mode"
+msgstr "Markdown modu"
+
+# linsticky/sticky/sticky_markdown.py
+msgid "Edit (Ctrl+E)"
+msgstr "Düzenle (Ctrl+E)"
+
+# linsticky/sticky/sticky_markdown.py
+msgid "Preview (Ctrl+E)"
+msgstr "Önizleme (Ctrl+E)"
+
+# linsticky/sticky/sticky_markdown.py
+msgid "Convert to Markdown?"
+msgstr "Markdown'a dönüştürülsün mü?"
+
+# linsticky/sticky/sticky_markdown.py
+msgid "Underline, text colors and font sizes have no Markdown equivalent and will be removed."
+msgstr "Altı çizili metin, metin renkleri ve yazı tipi boyutlarının Markdown'da karşılığı yoktur ve kaldırılacaktır."
+
+# linsticky/sticky/sticky_markdown.py
+msgid "Convert"
+msgstr "Dönüştür"

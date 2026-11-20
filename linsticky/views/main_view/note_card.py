@@ -3,6 +3,7 @@ import builtins
 
 import theme
 from content import codec, render
+from content import markdown as md
 
 _ = builtins._
 
@@ -24,6 +25,7 @@ class NoteCard(Gtk.Box):
         self.note_id = note["id"]
         self.db = db
         self.is_pinned = note['is_pinned'] == 1 if 'is_pinned' in note.keys() else False
+        self.is_markdown = bool(note['is_markdown']) if 'is_markdown' in note.keys() else False
         self.menu_callback = menu_callback
         self.refresh_callback = refresh_callback
 
@@ -110,8 +112,13 @@ class NoteCard(Gtk.Box):
 
     def set_segments(self, segments: list[dict]):
         """Renders the given content segments into the preview label."""
-        self._search_text = codec.plain_text(segments).lower()
-        markup_text = render.segments_to_pango(segments, max_lines=5)
+        if self.is_markdown:
+            source = codec.plain_text(segments)
+            self._search_text = md.to_plain(source).lower()
+            markup_text = md.to_pango(source, max_lines=5, links=False)
+        else:
+            self._search_text = codec.plain_text(segments).lower()
+            markup_text = render.segments_to_pango(segments, max_lines=5)
         self.label.set_markup(f'<span foreground="#000000">{markup_text}</span>')
 
     def update_color(self, hex_color: str):

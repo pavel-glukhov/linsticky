@@ -44,6 +44,9 @@ class StickyFormatting:
         Args:
             tag_name: The name of the tag to apply or remove.
         """
+        if getattr(self, "is_markdown", False):
+            self.md_wrap_selection(tag_name)
+            return
         bounds = self.buffer.get_selection_bounds()
         if not bounds:
             return
@@ -118,7 +121,8 @@ class StickyFormatting:
         If a line starts with a bullet, it's removed. Otherwise, a bullet is added.
         This operation is performed on all lines within the selection.
         """
-        BULLET_CHAR = " • "
+        # Markdown notes use a Markdown list marker instead of the bullet glyph.
+        BULLET_CHAR = "- " if getattr(self, "is_markdown", False) else " • "
         res = self.buffer.get_selection_bounds()
 
         start, end = res if res else (

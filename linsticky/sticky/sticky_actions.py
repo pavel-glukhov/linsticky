@@ -7,7 +7,8 @@ into a JSON structure suitable for database storage.
 """
 from gi.repository import Gtk, GLib, Pango, PangoCairo
 
-from content import codec
+from content import codec, render
+from content import markdown as md
 from .customization_dialog import CustomizationDialog
 
 
@@ -35,6 +36,7 @@ class StickyActions:
 
         self._loading = True
 
+        self.is_markdown = bool(row["is_markdown"]) if "is_markdown" in row.keys() else False
         self.buffer.set_text("")
         self._insert_segments(codec.decode(row["content"]))
 
@@ -127,7 +129,16 @@ class StickyActions:
         cr = context.get_cairo_context()
         layout = context.create_pango_layout()
         start, end = self.buffer.get_bounds()
-        layout.set_text(self.buffer.get_text(start, end, False), -1)
+        plain = self.buffer.get_text(start, end, False)
+        # Print with formatting: rendered Markdown or the rich text tags.
+        if getattr(self, "is_markdown", False):
+            markup = md.to_pango(plain, links=False)
+        else:
+            markup = render.segments_to_pango(self._get_buffer_segments())
+        try:
+            layout.set_markup(markup, -1)
+        except Exception:
+            layout.set_text(plain, -1)
         layout.set_width(int(context.get_width() * Pango.SCALE))
         PangoCairo.show_layout(cr, layout)
 

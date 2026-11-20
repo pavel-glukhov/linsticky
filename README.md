@@ -36,6 +36,8 @@ Create, edit, and organize your notes in a clean, distraction-free interface des
 Personalize your notes by choosing colors that match your workflow and mood.
 - ✍️ Rich Text Preservation
 All text formatting is reliably saved, so your notes always look exactly as intended.
+- Ⓜ️ Markdown Notes
+Turn on **Markdown** in a note's menu to write in Markdown and switch between source and rendered preview (button in the header, `Ctrl+E`, or double-click the preview). Supports headings, bold/italic/strikethrough, inline and fenced code, links, bullet/numbered/task lists, quotes and horizontal rules.
 - 🌍 Multilingual Support
 Use the app in multiple languages, including:
   - English

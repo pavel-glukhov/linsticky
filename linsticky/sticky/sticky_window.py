@@ -13,9 +13,10 @@ from .sticky_formatting import StickyFormatting
 from .sticky_actions import StickyActions
 from .sticky_ui import StickyUI
 from .sticky_events import StickyEvents
+from .sticky_markdown import StickyMarkdown
 
 
-class StickyWindow(Adw.Window, StickyFormatting, StickyActions, StickyUI, StickyEvents):
+class StickyWindow(Adw.Window, StickyFormatting, StickyActions, StickyUI, StickyEvents, StickyMarkdown):
     """
     Represents a single sticky note window.
 
@@ -47,6 +48,7 @@ class StickyWindow(Adw.Window, StickyFormatting, StickyActions, StickyUI, Sticky
         self._dirty = False
         self._preview_timer_id = None
         self.btn_font_size = None
+        self.is_markdown = False
         self.scale = 1.0
         self.current_color = "#FFF59D"
         self.default_font_size = 12
@@ -77,6 +79,7 @@ class StickyWindow(Adw.Window, StickyFormatting, StickyActions, StickyUI, Sticky
         self.apply_styles()
         self.setup_header()
         self.setup_text_area() # This now also sets up the key controller
+        self.setup_markdown_preview()
         self.setup_tags()
         self.setup_formatting_bar()
         self.setup_resize_handle()
@@ -85,6 +88,10 @@ class StickyWindow(Adw.Window, StickyFormatting, StickyActions, StickyUI, Sticky
         self.load_from_db()
         self._loading = False
         self._connect_main_signals()
+        if self.is_markdown:
+            # Markdown notes open in the rendered preview when they have content.
+            self.md_preview_active = bool(self._get_buffer_text().strip())
+            self.sync_markdown_ui()
 
         # --- Event and Persistence Controllers ---
         focus_ctrl = Gtk.EventControllerFocus()
@@ -147,6 +154,9 @@ class StickyWindow(Adw.Window, StickyFormatting, StickyActions, StickyUI, Sticky
             ("strikethrough", "<s>S</s>", self.apply_format, "strikethrough"),
             ("list", "≡", self.toggle_bullet_list, None)
         ]
+        if self.is_markdown:
+            # Markdown has no underline, text colors or font sizes.
+            buttons_config = [b for b in buttons_config if b[0] != "underline"]
 
         has_any_btn = False
         for key, label, callback, arg in buttons_config:
@@ -162,8 +172,8 @@ class StickyWindow(Adw.Window, StickyFormatting, StickyActions, StickyUI, Sticky
                 self.format_bar.append(btn)
                 has_any_btn = True
 
-        show_color = fmt_config.get("text_color", True)
-        show_font = fmt_config.get("font_size", True)
+        show_color = fmt_config.get("text_color", True) and not self.is_markdown
+        show_font = fmt_config.get("font_size", True) and not self.is_markdown
 
         if has_any_btn and (show_color or show_font):
             sep = Gtk.Separator(orientation=Gtk.Orientation.VERTICAL, margin_start=int(3*scale), margin_end=int(3*scale))
@@ -212,4 +222,4 @@ class StickyWindow(Adw.Window, StickyFormatting, StickyActions, StickyUI, Sticky
             self.main_box.remove(self.header_box)
         self.setup_header()
         self.main_box.reorder_child_after(self.header_box, None)
-        self.setup_formatting_bar()
+        self.sync_markdown_ui()

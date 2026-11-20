@@ -56,6 +56,8 @@ class StickyUI:
         spacer.add_controller(header_drag)
         self.header_box.append(spacer)
 
+        self.header_box.append(self.create_markdown_toggle_button())
+
         btn_menu = Gtk.MenuButton(has_frame=False, icon_name="open-menu-symbolic")
         btn_menu.add_css_class("header-btn-subtle")
         self.setup_main_menu(btn_menu)
@@ -104,6 +106,13 @@ class StickyUI:
         click_custom.connect("released", lambda *args: (self.on_customization_clicked(None), popover.popdown()))
         box_custom.add_controller(click_custom)
         self.menu_vbox.append(box_custom)
+
+        # Markdown mode toggle
+        fmt_config = self.config.get("formatting", {})
+        if not isinstance(fmt_config, dict) or fmt_config.get("markdown", True):
+            self.menu_vbox.append(self.create_markdown_menu_item(popover))
+        else:
+            self.chk_markdown = None
 
         # Print Menu Item
         box_print = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10, margin_top=5, margin_bottom=5, margin_start=5, margin_end=5)
@@ -207,4 +216,8 @@ class StickyUI:
         self.text_view.add_controller(key_ctrl)
 
         self.scrolled = Gtk.ScrolledWindow(child=self.text_view, vexpand=True)
-        self.main_box.append(self.scrolled)
+        # The stack holds the editor ("edit") and, for Markdown notes, the
+        # rendered preview ("preview", added by StickyMarkdown).
+        self.content_stack = Gtk.Stack(vexpand=True)
+        self.content_stack.add_named(self.scrolled, "edit")
+        self.main_box.append(self.content_stack)

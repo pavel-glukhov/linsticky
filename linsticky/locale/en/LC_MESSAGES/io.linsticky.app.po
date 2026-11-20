@@ -319,3 +319,32 @@ msgstr "Some changes require an application restart to take full effect."
 # /linsticky/views/settings_view.py:324
 msgid "OK"
 msgstr "OK"
+
+# linsticky/sticky/sticky_markdown.py
+msgid "Markdown"
+msgstr "Markdown"
+
+# linsticky/views/settings_view.py
+# linsticky/sticky/customization_dialog.py
+msgid "Markdown mode"
+msgstr "Markdown mode"
+
+# linsticky/sticky/sticky_markdown.py
+msgid "Edit (Ctrl+E)"
+msgstr "Edit (Ctrl+E)"
+
+# linsticky/sticky/sticky_markdown.py
+msgid "Preview (Ctrl+E)"
+msgstr "Preview (Ctrl+E)"
+
+# linsticky/sticky/sticky_markdown.py
+msgid "Convert to Markdown?"
+msgstr "Convert to Markdown?"
+
+# linsticky/sticky/sticky_markdown.py
+msgid "Underline, text colors and font sizes have no Markdown equivalent and will be removed."
+msgstr "Underline, text colors and font sizes have no Markdown equivalent and will be removed."
+
+# linsticky/sticky/sticky_markdown.py
+msgid "Convert"
+msgstr "Convert"

@@ -257,3 +257,32 @@ msgstr ""
 # /linsticky/views/settings_view.py:324
 msgid "OK"
 msgstr ""
+
+# linsticky/sticky/sticky_markdown.py
+msgid "Markdown"
+msgstr ""
+
+# linsticky/views/settings_view.py
+# linsticky/sticky/customization_dialog.py
+msgid "Markdown mode"
+msgstr ""
+
+# linsticky/sticky/sticky_markdown.py
+msgid "Edit (Ctrl+E)"
+msgstr ""
+
+# linsticky/sticky/sticky_markdown.py
+msgid "Preview (Ctrl+E)"
+msgstr ""
+
+# linsticky/sticky/sticky_markdown.py
+msgid "Convert to Markdown?"
+msgstr ""
+
+# linsticky/sticky/sticky_markdown.py
+msgid "Underline, text colors and font sizes have no Markdown equivalent and will be removed."
+msgstr ""
+
+# linsticky/sticky/sticky_markdown.py
+msgid "Convert"
+msgstr ""

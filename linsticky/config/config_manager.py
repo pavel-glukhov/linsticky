@@ -66,7 +66,7 @@ class ConfigManager:
             "formatting": {
                 "bold": True, "italic": True, "underline": True,
                 "strikethrough": True, "list": True, "text_color": True,
-                "font_size": True
+                "font_size": True, "markdown": True
             }
         }
 
