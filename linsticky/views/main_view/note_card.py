@@ -105,11 +105,12 @@ class NoteCard(Gtk.Box):
         gesture.set_state(Gtk.EventSequenceState.CLAIMED)
 
     def get_search_text(self) -> str:
-        """Lower-cased text used by the main window search filter."""
-        return self.label.get_text().lower()
+        """Lower-cased full note text used by the main window search filter."""
+        return self._search_text
 
     def set_segments(self, segments: list[dict]):
         """Renders the given content segments into the preview label."""
+        self._search_text = codec.plain_text(segments).lower()
         markup_text = render.segments_to_pango(segments, max_lines=5)
         self.label.set_markup(f'<span foreground="#000000">{markup_text}</span>')
 

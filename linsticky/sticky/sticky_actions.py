@@ -85,10 +85,7 @@ class StickyActions:
             x, y = getattr(self, 'saved_x', 300), getattr(self, 'saved_y', 300)
 
             if self.note_id:
-                self.db.update(
-                    self.note_id, hex_data, x, y, w, h,
-                    self.current_color, 1 if getattr(self, 'is_pinned', False) else 0
-                )
+                self.db.update(self.note_id, hex_data, x, y, w, h, self.current_color)
                 self.saved_width, self.saved_height = w, h
                 self._dirty = False
         except Exception as e:

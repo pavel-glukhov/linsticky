@@ -107,7 +107,7 @@ class NotesDB:
     def update(self, note_id: int, content: str,
                x: int, y: int, w: int,
                h: int, color: str,
-               always_on_top: int = 0):
+               always_on_top: int = None):
         """
         Updates an existing note's properties in the database.
         Args:
@@ -118,13 +118,20 @@ class NotesDB:
             w (int): Width of the note window.
             h (int): Height of the note window.
             color (str): Background color of the note.
-            always_on_top (int, optional): Whether the note is always on top (0 or 1). Defaults to 0.
+            always_on_top (int, optional): Whether the note is always on top (0 or 1).
+                If None (default), the stored value is left unchanged.
         """
         with self.conn:
-            self.conn.execute(
-                "UPDATE notes SET content=?, x=?, y=?, w=?, h=?, color=?, always_on_top=? WHERE id=?",
-                (content, x, y, w, h, color, always_on_top, note_id)
-            )
+            if always_on_top is None:
+                self.conn.execute(
+                    "UPDATE notes SET content=?, x=?, y=?, w=?, h=?, color=? WHERE id=?",
+                    (content, x, y, w, h, color, note_id)
+                )
+            else:
+                self.conn.execute(
+                    "UPDATE notes SET content=?, x=?, y=?, w=?, h=?, color=?, always_on_top=? WHERE id=?",
+                    (content, x, y, w, h, color, always_on_top, note_id)
+                )
 
     def get(self, note_id: int) -> sqlite3.Row:
         """

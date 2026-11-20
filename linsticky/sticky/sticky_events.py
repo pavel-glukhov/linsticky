@@ -58,6 +58,9 @@ class StickyEvents:
         """
         Begins a native window move operation when the header area is dragged.
         """
+        # Remember where the note was when the drag started: drag-update
+        # reports the offset from this point, not from the previous event.
+        self._drag_origin = (self.saved_x, self.saved_y)
         surface = self.get_native().get_surface()
         if surface:
             surface.begin_move(gesture.get_device(), Gdk.BUTTON_PRIMARY, x, y, Gdk.CURRENT_TIME)
@@ -68,17 +71,10 @@ class StickyEvents:
         This is primarily for X11 compatibility where continuous updates are needed.
         """
         if "X11" in Gdk.Display.get_default().__class__.__name__:
-            self.saved_x += dx
-            self.saved_y += dy
-
-    def _on_header_drag_end(self, gesture: Gtk.GestureDrag, dx: float, dy: float):
-        """
-        Finalizes the note's position after a drag operation is complete.
-        """
-        # The final position is implicitly handled by the window manager in Wayland.
-        # For X11, the continuous updates in `_on_header_drag_update` are sufficient.
-        # This method is kept for potential future logic.
-        pass
+            origin_x, origin_y = getattr(self, "_drag_origin", (self.saved_x, self.saved_y))
+            self.saved_x = int(origin_x + dx)
+            self.saved_y = int(origin_y + dy)
+            self._dirty = True
 
     def _on_map(self, widget: Gtk.Widget):
         """

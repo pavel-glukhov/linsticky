@@ -53,7 +53,6 @@ class StickyUI:
         header_drag = Gtk.GestureDrag.new()
         header_drag.connect("drag-begin", self._on_header_drag_begin)
         header_drag.connect("drag-update", self._on_header_drag_update)
-        header_drag.connect("drag-end", self._on_header_drag_end)
         spacer.add_controller(header_drag)
         self.header_box.append(spacer)
 

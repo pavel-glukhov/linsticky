@@ -73,7 +73,7 @@ except Exception as e:
 # --- GTK and Adwaita Initialization ---
 gi.require_version('Gtk', '4.0')
 gi.require_version('Adw', '1')
-from gi.repository import Adw, GLib
+from gi.repository import Adw, GLib, Gio
 from db.db_controller import NotesDB
 from application_manager import ApplicationManager
 
@@ -93,18 +93,26 @@ class StickyApp(Adw.Application):
         self.db = NotesDB(path=self.config.get("db_path"))
         self.app_manager = ApplicationManager(self, self.db, self.config)
         self.lock_file = None
-        
+        self._ui_ready = False
+
         # Register signal handlers for graceful shutdown (e.g., from systemctl or kill).
         GLib.unix_signal_add(GLib.PRIORITY_DEFAULT, signal.SIGTERM, self._on_signal_quit, None)
         GLib.unix_signal_add(GLib.PRIORITY_DEFAULT, signal.SIGINT, self._on_signal_quit, None)
 
     def do_activate(self):
         """
-        Called when the application is activated (e.g., launched for the first time).
-        
-        This method sets up the main UI components, including the main window and tray icon,
-        and restores any previously opened notes.
+        Called when the application is activated.
+
+        On the first activation this sets up the main UI components, including
+        the main window and tray icon, and restores previously opened notes.
+        Later activations (e.g. the user launching the app again) only bring
+        the main window to the front.
         """
+        if self._ui_ready:
+            self.app_manager.show_main_window()
+            return
+        self._ui_ready = True
+
         self.app_manager.setup_ui_settings()
         self.app_manager.setup_main_window()
         self.app_manager.start_tray_subprocess()
@@ -138,6 +146,23 @@ class StickyApp(Adw.Application):
                 
         self.quit()
 
+def activate_running_instance() -> bool:
+    """
+    Asks an already running instance (over D-Bus) to show its main window.
+    Returns True if a running instance was found and activated.
+    """
+    try:
+        remote = Gio.Application(application_id=APP_ID)
+        remote.register(None)
+        if remote.get_is_remote():
+            remote.activate()
+            remote.get_dbus_connection().flush_sync(None)
+            return True
+    except Exception as e:
+        print(f"WARNING: Could not contact the running instance: {e}")
+    return False
+
+
 def acquire_lock():
     """
     Attempts to acquire a file lock to ensure only one instance is running.
@@ -166,10 +191,10 @@ if __name__ == "__main__":
     # Try to acquire lock before starting the app
     lock = acquire_lock()
     if not lock:
-        print("INFO: Another instance is already running. Exiting.")
-        # In a perfect world, we would send a signal to the existing instance here,
-        # but Adw.Application handles activation via DBus automatically if configured correctly.
-        # Since we are here, it means either DBus is not working or we want to enforce strict single instance.
+        if activate_running_instance():
+            print("INFO: Another instance is already running. Its main window was activated.")
+        else:
+            print("INFO: Another instance is already running. Exiting.")
         sys.exit(0)
     
     app = StickyApp()

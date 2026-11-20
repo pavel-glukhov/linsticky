@@ -260,6 +260,7 @@ class ApplicationManager:
             self.tray_process = None
         
         if self.main_window:
+            self.main_window.is_quitting = True
             # Close all individual sticky note windows first.
             for note_id in list(self.main_window.stickies.keys()):
                 win = self.main_window.stickies.get(note_id)

@@ -33,6 +33,9 @@ class MainWindow(Adw.ApplicationWindow):
         # or rebuilding the whole list.
         self.cards = {}
         self._search_query = ""
+        # Set while the application shuts down, so notes closed by the quit
+        # keep their "open" flag and are restored on the next start.
+        self.is_quitting = False
 
         # flowbox/flowboxchild rules live in the shared stylesheet.
         theme.ensure_static_css()
@@ -224,6 +227,7 @@ class MainWindow(Adw.ApplicationWindow):
 
         new_sticky = StickyWindow(self.db, note_id, self)
         self.stickies[note_id] = new_sticky
+        self.db.set_open_state(note_id, 1)
         new_sticky.present()
 
     def on_sticky_closed(self, note_id: int):
@@ -235,6 +239,8 @@ class MainWindow(Adw.ApplicationWindow):
         """
         if note_id in self.stickies:
             del self.stickies[note_id]
+        if not self.is_quitting:
+            self.db.set_open_state(note_id, 0)
 
     def on_search(self, entry: Gtk.SearchEntry):
         """
