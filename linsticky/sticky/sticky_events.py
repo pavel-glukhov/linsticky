@@ -5,7 +5,10 @@ This module contains the mixin class responsible for handling all user
 interactions with a sticky note, including button clicks, drag-and-drop
 for moving, resizing gestures, and keyboard shortcuts.
 """
-from gi.repository import Gtk, Gdk
+from gi.repository import Gtk, Gdk, GLib
+
+# Delay before the main window preview card is refreshed after typing.
+PREVIEW_UPDATE_DELAY_MS = 250
 
 
 class StickyEvents:
@@ -86,13 +89,25 @@ class StickyEvents:
 
     def _on_buffer_changed(self, buffer: Gtk.TextBuffer):
         """
-        Handles the 'changed' signal from the text buffer to update the main
-        window's preview card in real-time.
+        Marks the note as modified and schedules a refresh of the main
+        window's preview card.
+
+        The preview used to be regenerated synchronously (and twice, because
+        the signal was connected twice) on every key press. It is now coalesced
+        into at most one update per PREVIEW_UPDATE_DELAY_MS.
         """
-        if not getattr(self, '_loading', True) and self.main_window:
-            # Pass the raw segment data for real-time preview generation.
-            segments = self._get_buffer_segments()
-            self.main_window.update_card_text(self.note_id, segments)
+        if getattr(self, '_loading', True):
+            return
+        self._dirty = True
+        if self.main_window and self._preview_timer_id is None:
+            self._preview_timer_id = GLib.timeout_add(PREVIEW_UPDATE_DELAY_MS, self._flush_preview_update)
+
+    def _flush_preview_update(self) -> bool:
+        """Pushes the current content to the main window preview card."""
+        self._preview_timer_id = None
+        if not self._is_destroying and self.main_window:
+            self.main_window.update_card_text(self.note_id, self._get_buffer_segments())
+        return False
 
     def _on_key_pressed(self, controller, keyval, keycode, state) -> bool:
         """

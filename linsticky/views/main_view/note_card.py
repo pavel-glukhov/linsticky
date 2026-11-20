@@ -3,6 +3,8 @@ import html as html_lib
 from gi.repository import Gtk, Pango
 import builtins
 
+import theme
+
 _ = builtins._
 
 class NoteCard(Gtk.Box):
@@ -65,18 +67,11 @@ class NoteCard(Gtk.Box):
             except (ValueError, TypeError, json.JSONDecodeError):
                 segments = [{"text": initial_content_raw, "tags": []}]
 
-        markup_text = self._generate_markup(segments)
-
         self.label = Gtk.Label()
+        # Black text color comes from the shared stylesheet (see theme.py).
         self.label.add_css_class("note-card-label")
         self.label.set_use_markup(True)
-        
-        label_provider = Gtk.CssProvider()
-        label_provider.load_from_data(b"label { color: #000000; }")
-        self.label.get_style_context().add_provider(label_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
-
-        final_markup = f'<span foreground="#000000">{markup_text}</span>'
-        self.label.set_markup(final_markup)
+        self.set_segments(segments)
 
         self.label.set_wrap(True)
         self.label.set_wrap_mode(Pango.WrapMode.WORD_CHAR)
@@ -117,6 +112,15 @@ class NoteCard(Gtk.Box):
         if self.refresh_callback:
             self.refresh_callback()
         gesture.set_state(Gtk.EventSequenceState.CLAIMED)
+
+    def get_search_text(self) -> str:
+        """Lower-cased text used by the main window search filter."""
+        return self.label.get_text().lower()
+
+    def set_segments(self, segments: list[dict]):
+        """Renders the given content segments into the preview label."""
+        markup_text = self._generate_markup(segments)
+        self.label.set_markup(f'<span foreground="#000000">{markup_text}</span>')
 
     def _generate_markup(self, segments: list[dict]) -> str:
         """
@@ -181,17 +185,7 @@ class NoteCard(Gtk.Box):
         Args:
             hex_color (str): The new hexadecimal color string.
         """
-        if not hex_color: hex_color = "#FFF59D"
-        provider = Gtk.CssProvider()
-        css = f"""
-        .sticky-paper-card {{ 
-            background-color: {hex_color}; 
-            border-radius: 0px; 
-            min-height: 50px; 
-        }}
-        """
-        provider.load_from_data(css.encode())
-        self.card_canvas.get_style_context().add_provider(provider, Gtk.STYLE_PROVIDER_PRIORITY_USER)
+        theme.apply_note_color(self.card_canvas, hex_color)
 
     def setup_gestures(self):
         """Sets up gesture recognizers for click and right-click actions on the card."""

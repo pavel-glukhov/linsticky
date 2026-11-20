@@ -2,6 +2,7 @@ import builtins
 from gi.repository import Gtk, Adw, Gio, Gdk
 from config.config_manager import ConfigManager
 from config.config import get_supported_languages
+import theme
 
 _ = builtins._
 
@@ -190,9 +191,7 @@ class SettingsView(Gtk.Box):
             btn (Gtk.Button): The button widget to style.
             color (str): The hexadecimal color string (e.g., "#RRGGBB").
         """
-        cp = Gtk.CssProvider()
-        cp.load_from_data(f"button {{ background-color: {color}; border-radius: 50%; border: 1px solid rgba(0,0,0,0.2); }}".encode())
-        btn.get_style_context().add_provider(cp, Gtk.STYLE_PROVIDER_PRIORITY_USER)
+        theme.apply_swatch(btn, color, "round")
 
     def on_color_btn_clicked(self, btn, index: int):
         """

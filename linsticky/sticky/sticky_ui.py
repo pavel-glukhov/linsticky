@@ -8,6 +8,8 @@ text area, menus, and resize handle.
 from gi.repository import Gtk, Gdk
 import builtins
 
+import theme
+
 if not hasattr(builtins, "_"):
     builtins._ = lambda s: s
 
@@ -85,9 +87,7 @@ class StickyUI:
         for i, color in enumerate(self.config.get("palette", [])):
             b = Gtk.Button()
             b.set_size_request(btn_size, btn_size)
-            cp = Gtk.CssProvider()
-            cp.load_from_data(f"button {{ background-color: {color}; border-radius: 50%; border: 1px solid rgba(0,0,0,0.2); }}".encode())
-            b.get_style_context().add_provider(cp, Gtk.STYLE_PROVIDER_PRIORITY_USER)
+            theme.apply_swatch(b, color, "round")
             b.connect("clicked", lambda _, c=color: (self.apply_color(c), popover.popdown()))
             grid.attach(b, i % 4, i // 4, 1, 1)
         self.menu_vbox.append(grid)
@@ -130,9 +130,7 @@ class StickyUI:
         for i, color in enumerate(self.config.get("text_colors", [])):
             b = Gtk.Button()
             b.set_size_request(btn_size, btn_size)
-            cp = Gtk.CssProvider()
-            cp.load_from_data(f"button {{ background-color: {color}; border-radius: 3px; }}".encode())
-            b.get_style_context().add_provider(cp, Gtk.STYLE_PROVIDER_PRIORITY_USER)
+            theme.apply_swatch(b, color, "square")
             b.connect("clicked", lambda _, c=color: (self.apply_text_color(c), popover.popdown()))
             grid.attach(b, i % 4, i // 4, 1, 1)
 
@@ -174,6 +172,8 @@ class StickyUI:
         """
         Applies a new background color to the note and updates the live preview card.
         """
+        if hex_color != self.current_color and not getattr(self, '_loading', True):
+            self._dirty = True
         self.current_color = hex_color
         self._update_ui_design()
         if self.main_window:
@@ -199,6 +199,7 @@ class StickyUI:
         self.text_view = Gtk.TextView(wrap_mode=Gtk.WrapMode.WORD_CHAR)
         self.text_view.add_css_class("sticky-text-edit")
         self.buffer = self.text_view.get_buffer()
+        # The only "changed" handler: marks the note dirty and schedules the preview update.
         self.buffer.connect("changed", self._on_buffer_changed)
 
         # Attach the key controller directly to the text view.

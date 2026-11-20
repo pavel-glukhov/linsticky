@@ -71,6 +71,9 @@ class StickyActions:
             return False
         if getattr(self, '_loading', True):
             return True
+        if not force and not getattr(self, '_dirty', True):
+            # Nothing changed since the last save: skip the database write.
+            return True
 
         try:
             # Get the raw buffer data and encode it for database storage.
@@ -89,6 +92,7 @@ class StickyActions:
                     self.current_color, 1 if getattr(self, 'is_pinned', False) else 0
                 )
                 self.saved_width, self.saved_height = w, h
+                self._dirty = False
         except Exception as e:
             print(f"ERROR: Failed to save note {self.note_id}: {e}")
         return True
@@ -151,9 +155,12 @@ class StickyActions:
         except Exception as e:
             print(f"ERROR: Final save on close failed for note {self.note_id}: {e}")
         
-        if hasattr(self, 'save_timer_id') and self.save_timer_id:
+        if getattr(self, 'save_timer_id', None):
             GLib.source_remove(self.save_timer_id)
             self.save_timer_id = None
+        if getattr(self, '_preview_timer_id', None):
+            GLib.source_remove(self._preview_timer_id)
+            self._preview_timer_id = None
 
         if self.main_window:
             self.main_window.on_sticky_closed(self.note_id)

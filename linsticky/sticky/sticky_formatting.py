@@ -105,7 +105,7 @@ class StickyFormatting:
         # Apply the new size tag.
         self.buffer.apply_tag_by_name(f"font_size_{size}", start, end)
 
-        if hasattr(self, 'btn_font_size'):
+        if getattr(self, 'btn_font_size', None) is not None:
             self.btn_font_size.set_label(str(size))
 
         self.text_view.grab_focus()
