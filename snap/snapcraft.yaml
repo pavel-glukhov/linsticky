@@ -63,11 +63,12 @@ parts:
       if [ ! -f "$CRAFT_PRIME/usr/bin/python3" ]; then
         ln -s /usr/bin/python3 $CRAFT_PRIME/usr/bin/python3
       fi
-      # Ensure the desktop file is copied to the correct location
+      # The launcher comes from snap/gui/linsticky.desktop (copied to meta/gui by
+      # snapcraft). Do not add more .desktop files to meta/gui: snapd installs
+      # every one of them, which shows duplicate LinSticky icons.
       mkdir -p $CRAFT_PRIME/meta/gui
-      cp $CRAFT_PART_SRC/snap/gui/io.linsticky.app.desktop $CRAFT_PRIME/meta/gui/
       cp $CRAFT_PART_SRC/snap/gui/app.png $CRAFT_PRIME/meta/gui/
-      
+
       # Manually copy the source code to the expected location if the python plugin didn't do it as expected
       # This is a fallback to ensure the files are present
       mkdir -p $CRAFT_PRIME/lib/python3.12/site-packages/linsticky
@@ -91,7 +92,6 @@ slots:
 apps:
   linsticky:
     command: bin/python3 $SNAP/lib/python3.12/site-packages/linsticky/main.py
-    desktop: meta/gui/io.linsticky.app.desktop
     extensions:
       - gnome
     common-id: io.linsticky.app
