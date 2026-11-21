@@ -17,7 +17,7 @@ _______________
 
 _______________
 
-![example of app](https://github.com/pavel-glukhov/linsticky/blob/gtk/pic/example_2.0.0.png)
+![example of app](https://github.com/pavel-glukhov/linsticky/blob/gtk/pic/example_2.2.0_main_menu.png)
 
 ## 📑 Table of Contents
 - [What's New in 2.2.0](#-whats-new-in-220)
