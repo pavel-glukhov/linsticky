@@ -241,11 +241,6 @@ msgstr "Redefinir"
 msgid "Formatting Buttons"
 msgstr "Botões de formatação"
 
-# linsticky/views/settings_view.py:141
-# /linsticky/views/settings_view.py:141
-msgid "Choose which buttons to show on stickers"
-msgstr "Escolha quais botões mostrar nos adesivos"
-
 # linsticky/views/settings_view.py:144
 # /linsticky/views/settings_view.py:144
 msgid "Bold (B)"
@@ -303,16 +298,6 @@ msgstr ""
 "Algumas alterações exigem a reinicialização do aplicativo para terem efeito "
 "completo."
 
-# linsticky/views/settings_view.py:324
-# /linsticky/views/settings_view.py:324
-msgid "OK"
-msgstr "OK"
-
-# linsticky/views/settings_view.py
-# linsticky/sticky/customization_dialog.py
-msgid "Markdown mode"
-msgstr "Modo Markdown"
-
 # linsticky/sticky/sticky_markdown.py
 msgid "Edit (Ctrl+E)"
 msgstr "Editar (Ctrl+E)"
@@ -357,10 +342,6 @@ msgstr "Linha horizontal"
 msgid "Markdown Toolbar"
 msgstr "Barra do Markdown"
 
-# linsticky/views/settings_view.py
-msgid "New notes are created in Markdown; existing notes are not changed"
-msgstr "Novas notas são criadas em Markdown; as existentes não são alteradas"
-
 # linsticky/views/settings_view.py:391
 msgid "Later"
 msgstr "Mais tarde"
@@ -368,3 +349,35 @@ msgstr "Mais tarde"
 # linsticky/views/settings_view.py:392
 msgid "Restart Now"
 msgstr "Reiniciar agora"
+
+# linsticky/sticky/sticky_ui.py:50
+msgid "New note"
+msgstr "Nova nota"
+
+# linsticky/views/main_view/main_view.py:61
+msgid "Choose the note type"
+msgstr "Escolher o tipo de nota"
+
+# linsticky/views/main_view/main_view.py:237
+msgid "New Markdown Note"
+msgstr "Nova nota Markdown"
+
+# linsticky/views/main_view/main_view.py:237
+msgid "New Text Note"
+msgstr "Nova nota de texto"
+
+# linsticky/views/new_note_menu.py:24
+msgid "Text Note"
+msgstr "Nota de texto"
+
+# linsticky/views/new_note_menu.py:24
+msgid "Markdown Note"
+msgstr "Nota Markdown"
+
+# linsticky/views/settings_view.py:150
+msgid "Text notes"
+msgstr "Notas de texto"
+
+# linsticky/views/settings_view.py:169
+msgid "Markdown notes"
+msgstr "Notas Markdown"

@@ -243,11 +243,6 @@ msgstr "Restablecer"
 msgid "Formatting Buttons"
 msgstr "Botones de formato"
 
-# linsticky/views/settings_view.py:141
-# /linsticky/views/settings_view.py:141
-msgid "Choose which buttons to show on stickers"
-msgstr "Elija qué botones mostrar en las notas"
-
 # linsticky/views/settings_view.py:144
 # /linsticky/views/settings_view.py:144
 msgid "Bold (B)"
@@ -305,16 +300,6 @@ msgstr ""
 "Algunos cambios requieren reiniciar la aplicación para surtir efecto "
 "completo."
 
-# linsticky/views/settings_view.py:324
-# /linsticky/views/settings_view.py:324
-msgid "OK"
-msgstr "OK"
-
-# linsticky/views/settings_view.py
-# linsticky/sticky/customization_dialog.py
-msgid "Markdown mode"
-msgstr "Modo Markdown"
-
 # linsticky/sticky/sticky_markdown.py
 msgid "Edit (Ctrl+E)"
 msgstr "Editar (Ctrl+E)"
@@ -359,10 +344,6 @@ msgstr "Línea horizontal"
 msgid "Markdown Toolbar"
 msgstr "Barra de Markdown"
 
-# linsticky/views/settings_view.py
-msgid "New notes are created in Markdown; existing notes are not changed"
-msgstr "Las notas nuevas se crean en Markdown; las existentes no cambian"
-
 # linsticky/views/settings_view.py:391
 msgid "Later"
 msgstr "Más tarde"
@@ -370,3 +351,35 @@ msgstr "Más tarde"
 # linsticky/views/settings_view.py:392
 msgid "Restart Now"
 msgstr "Reiniciar ahora"
+
+# linsticky/sticky/sticky_ui.py:50
+msgid "New note"
+msgstr "Nueva nota"
+
+# linsticky/views/main_view/main_view.py:61
+msgid "Choose the note type"
+msgstr "Elegir el tipo de nota"
+
+# linsticky/views/main_view/main_view.py:237
+msgid "New Markdown Note"
+msgstr "Nueva nota Markdown"
+
+# linsticky/views/main_view/main_view.py:237
+msgid "New Text Note"
+msgstr "Nueva nota de texto"
+
+# linsticky/views/new_note_menu.py:24
+msgid "Text Note"
+msgstr "Nota de texto"
+
+# linsticky/views/new_note_menu.py:24
+msgid "Markdown Note"
+msgstr "Nota Markdown"
+
+# linsticky/views/settings_view.py:150
+msgid "Text notes"
+msgstr "Notas de texto"
+
+# linsticky/views/settings_view.py:169
+msgid "Markdown notes"
+msgstr "Notas Markdown"

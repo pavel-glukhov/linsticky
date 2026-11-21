@@ -240,11 +240,6 @@ msgstr "Қалпына келтіру"
 msgid "Formatting Buttons"
 msgstr "Пішімдеу батырмалары"
 
-# linsticky/views/settings_view.py:141
-# /linsticky/views/settings_view.py:141
-msgid "Choose which buttons to show on stickers"
-msgstr "Жазбаларда қай батырмаларды көрсету керегін таңдаңыз"
-
 # linsticky/views/settings_view.py:144
 # /linsticky/views/settings_view.py:144
 msgid "Bold (B)"
@@ -301,16 +296,6 @@ msgid "Some changes require an application restart to take full effect."
 msgstr ""
 "Кейбір өзгерістер толық күшіне енуі үшін қолданбаны қайта іске қосу қажет."
 
-# linsticky/views/settings_view.py:324
-# /linsticky/views/settings_view.py:324
-msgid "OK"
-msgstr "OK"
-
-# linsticky/views/settings_view.py
-# linsticky/sticky/customization_dialog.py
-msgid "Markdown mode"
-msgstr "Markdown режимі"
-
 # linsticky/sticky/sticky_markdown.py
 msgid "Edit (Ctrl+E)"
 msgstr "Өңдеу (Ctrl+E)"
@@ -355,10 +340,6 @@ msgstr "Көлденең сызық"
 msgid "Markdown Toolbar"
 msgstr "Markdown құралдар тақтасы"
 
-# linsticky/views/settings_view.py
-msgid "New notes are created in Markdown; existing notes are not changed"
-msgstr "Жаңа жазбалар Markdown-да жасалады; бұрынғылары өзгермейді"
-
 # linsticky/views/settings_view.py:391
 msgid "Later"
 msgstr "Кейінірек"
@@ -366,3 +347,35 @@ msgstr "Кейінірек"
 # linsticky/views/settings_view.py:392
 msgid "Restart Now"
 msgstr "Қазір қайта іске қосу"
+
+# linsticky/sticky/sticky_ui.py:50
+msgid "New note"
+msgstr "Жаңа жазба"
+
+# linsticky/views/main_view/main_view.py:61
+msgid "Choose the note type"
+msgstr "Жазба түрін таңдау"
+
+# linsticky/views/main_view/main_view.py:237
+msgid "New Markdown Note"
+msgstr "Жаңа Markdown жазбасы"
+
+# linsticky/views/main_view/main_view.py:237
+msgid "New Text Note"
+msgstr "Жаңа мәтіндік жазба"
+
+# linsticky/views/new_note_menu.py:24
+msgid "Text Note"
+msgstr "Мәтіндік жазба"
+
+# linsticky/views/new_note_menu.py:24
+msgid "Markdown Note"
+msgstr "Markdown жазбасы"
+
+# linsticky/views/settings_view.py:150
+msgid "Text notes"
+msgstr "Мәтіндік жазбалар"
+
+# linsticky/views/settings_view.py:169
+msgid "Markdown notes"
+msgstr "Markdown жазбалары"

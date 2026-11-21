@@ -9,15 +9,15 @@ if not hasattr(builtins, "_"):
 
 class CustomizationDialog(Gtk.Window):
     """
-    A modal dialog allowing the user to toggle visibility of formatting buttons
-    (for regular and Markdown notes) and to turn the Markdown mode on/off.
+    A modal dialog allowing the user to toggle visibility of the formatting
+    buttons of the sticker's type (text or Markdown note).
     """
     def __init__(self, parent_window):
         super().__init__()
         self.set_transient_for(parent_window)
         self.set_modal(True)
         self.set_title(builtins._("Customization"))
-        self.set_default_size(320, 520)
+        self.set_default_size(320, 480)
         self.set_resizable(False)
 
         # Use Adw.Window styling if available via CSS classes,
@@ -28,8 +28,8 @@ class CustomizationDialog(Gtk.Window):
         self.config = ConfigManager.load()
         self.formatting_config = self.config.get("formatting", {}).copy()
         md_config = self.config.get("markdown", {})
-        # Markdown mode only decides how NEW notes are created.
-        self.md_enabled = md_config.get("enabled", False)
+        # The dialog configures the toolbar of the sticker's own type.
+        self.is_markdown = bool(getattr(parent_window, "is_markdown", False))
         self.md_buttons = {b.key: md_config.get("buttons", {}).get(b.key, b.default) for b in MD_TOOLBAR}
 
         # Main layout: scrollable options above a fixed Save button.
@@ -47,13 +47,7 @@ class CustomizationDialog(Gtk.Window):
         vbox.set_margin_end(16)
         scrolled.set_child(vbox)
 
-        # --- Mode: decides how NEW notes are created ---
-        md_mode_box = self._list()
-        self._switch_row(md_mode_box, builtins._("Markdown mode"), self.md_enabled, self._on_md_enabled,
-                         subtitle=builtins._("New notes are created in Markdown; existing notes are not changed"))
-        vbox.append(md_mode_box)
-
-        # --- Regular toolbar (shown in the regular mode) ---
+        # --- Text note toolbar ---
         options = [
             ("bold", builtins._("Bold")),
             ("italic", builtins._("Italic")),
@@ -74,7 +68,7 @@ class CustomizationDialog(Gtk.Window):
         self.regular_section.append(list_box)
         vbox.append(self.regular_section)
 
-        # --- Markdown toolbar (shown in the Markdown mode) ---
+        # --- Markdown note toolbar ---
         self.md_section = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
         self.md_section.append(self._title(builtins._("Markdown Toolbar")))
         md_list = self._list()
@@ -85,7 +79,8 @@ class CustomizationDialog(Gtk.Window):
                 lambda state, k=button.key: self.md_buttons.__setitem__(k, state))
         self.md_section.append(md_list)
         vbox.append(self.md_section)
-        self._sync_sections()
+        self.regular_section.set_visible(not self.is_markdown)
+        self.md_section.set_visible(self.is_markdown)
 
         # Save Button
         btn_save = Gtk.Button(label=builtins._("Save & Apply"))
@@ -126,23 +121,13 @@ class CustomizationDialog(Gtk.Window):
         list_box.append(row)
         return switch
 
-    def _on_md_enabled(self, state: bool):
-        self.md_enabled = state
-        self._sync_sections()
-
-    def _sync_sections(self):
-        """Shows the toolbar options of the selected mode only."""
-        self.regular_section.set_visible(not self.md_enabled)
-        self.md_section.set_visible(self.md_enabled)
-
     def _on_save_clicked(self, button):
         """Saves configuration and triggers update in the main application."""
-        # Update the main config dictionary
-        self.config["formatting"] = self.formatting_config
-        self.config["markdown"] = {"enabled": self.md_enabled, "buttons": dict(self.md_buttons)}
-
-        # Save to disk
-        ConfigManager.save(self.config)
+        # Write only the toolbar settings on top of the current config on disk.
+        ConfigManager.update({
+            "formatting": self.formatting_config,
+            "markdown": {"buttons": dict(self.md_buttons)},
+        })
 
         # Trigger update in the main window to refresh all open notes
         if self.parent_window.main_window:

@@ -240,11 +240,6 @@ msgstr "Reset"
 msgid "Formatting Buttons"
 msgstr "Formatting Buttons"
 
-# linsticky/views/settings_view.py:141
-# /linsticky/views/settings_view.py:141
-msgid "Choose which buttons to show on stickers"
-msgstr "Choose which buttons to show on stickers"
-
 # linsticky/views/settings_view.py:144
 # /linsticky/views/settings_view.py:144
 msgid "Bold (B)"
@@ -300,16 +295,6 @@ msgstr "Restart Required"
 msgid "Some changes require an application restart to take full effect."
 msgstr "Some changes require an application restart to take full effect."
 
-# linsticky/views/settings_view.py:324
-# /linsticky/views/settings_view.py:324
-msgid "OK"
-msgstr "OK"
-
-# linsticky/views/settings_view.py
-# linsticky/sticky/customization_dialog.py
-msgid "Markdown mode"
-msgstr "Markdown mode"
-
 # linsticky/sticky/sticky_markdown.py
 msgid "Edit (Ctrl+E)"
 msgstr "Edit (Ctrl+E)"
@@ -354,10 +339,6 @@ msgstr "Horizontal rule"
 msgid "Markdown Toolbar"
 msgstr "Markdown Toolbar"
 
-# linsticky/views/settings_view.py
-msgid "New notes are created in Markdown; existing notes are not changed"
-msgstr "New notes are created in Markdown; existing notes are not changed"
-
 # linsticky/views/settings_view.py:391
 msgid "Later"
 msgstr "Later"
@@ -365,3 +346,35 @@ msgstr "Later"
 # linsticky/views/settings_view.py:392
 msgid "Restart Now"
 msgstr "Restart Now"
+
+# linsticky/sticky/sticky_ui.py:50
+msgid "New note"
+msgstr "New note"
+
+# linsticky/views/main_view/main_view.py:61
+msgid "Choose the note type"
+msgstr "Choose the note type"
+
+# linsticky/views/main_view/main_view.py:237
+msgid "New Markdown Note"
+msgstr "New Markdown Note"
+
+# linsticky/views/main_view/main_view.py:237
+msgid "New Text Note"
+msgstr "New Text Note"
+
+# linsticky/views/new_note_menu.py:24
+msgid "Text Note"
+msgstr "Text Note"
+
+# linsticky/views/new_note_menu.py:24
+msgid "Markdown Note"
+msgstr "Markdown Note"
+
+# linsticky/views/settings_view.py:150
+msgid "Text notes"
+msgstr "Text notes"
+
+# linsticky/views/settings_view.py:169
+msgid "Markdown notes"
+msgstr "Markdown notes"
