@@ -19,10 +19,6 @@ _______________
 
 ![Text and Markdown notes](pic/example_2.2.1.png)
 
-![Text and Markdown stickers](pic/example_2.2.1_sticks.png)
-
-![Settings](pic/example_2.2.1_settings.png)
-
 ## 📑 Table of Contents
 - [What's New in 2.2.0](#-whats-new-in-220)
 - [What's New in 2.1.1](#-whats-new-in-211)
