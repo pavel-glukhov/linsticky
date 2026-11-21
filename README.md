@@ -17,7 +17,7 @@ _______________
 
 _______________
 
-![example of app](https://github.com/pavel-glukhov/linsticky/blob/gtk/pic/example_2.2.0_main_menu.png)
+![example of app](pic/example_2.2.1_main_menu.png)
 
 ## 📑 Table of Contents
 - [What's New in 2.2.0](#-whats-new-in-220)
@@ -35,6 +35,10 @@ _______________
 - **Choose the note type when creating a note.** In the main window, **+** creates a note of the last chosen type and the arrow next to it offers *Text Note* or *Markdown Note*; **+** on a sticker opens the same choice. The *Markdown mode* switch is gone.
 - **Formatting buttons for both note types in Settings:** *Formatting Buttons* (text notes) and *Markdown Toolbar* (Markdown notes). A sticker's *Customize* dialog shows the buttons of its own type.
 - If Markdown mode was on in 2.1.x, **+** keeps creating Markdown notes until you pick another type.
+
+![Text and Markdown notes](pic/example_2.2.1.png)
+
+![Settings](pic/example_2.2.1_settings.png)
 
 ## 🆕 What's New in 2.1.1
 
@@ -56,6 +60,8 @@ Personalize your notes by choosing colors that match your workflow and mood.
 All text formatting is reliably saved, so your notes always look exactly as intended.
 - Ⓜ️ Markdown Notes
 Create a Markdown note from the **+** menu (*Markdown Note*); text notes are never converted. Switch between source and rendered preview with the header button, `Ctrl+E`, or a double-click on the preview; the bottom toolbar inserts Markdown (its buttons are configurable). Supports headings, bold/italic/strikethrough, inline and fenced code, links, bullet/numbered/task lists, quotes and horizontal rules.
+
+  ![Text and Markdown stickers](pic/example_2.2.1_sticks.png)
 - 🌍 Multilingual Support
 Use the app in multiple languages, including:
   - English
