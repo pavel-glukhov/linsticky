@@ -17,8 +17,6 @@ _______________
 
 _______________
 
-![example of app](pic/example_2.2.1_main_menu.png)
-
 ## 📑 Table of Contents
 - [What's New in 2.2.0](#-whats-new-in-220)
 - [What's New in 2.1.1](#-whats-new-in-211)
