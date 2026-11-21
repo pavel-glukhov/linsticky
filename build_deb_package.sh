@@ -18,6 +18,12 @@ APP_MAIN_SCRIPT="/usr/share/linsticky/main.py"
 ICON_PATH="/usr/share/linsticky/resources/icons/app.png"
 
 # ----------------------
+# Start from a clean staging directory so files removed from the project
+# do not linger in the package
+# ----------------------
+rm -rf "$PACKAGE_DIR"
+
+# ----------------------
 # Create necessary directories if they don't exist
 # ----------------------
 for dir in "$DEBIAN_DIR" "$USR_BIN_DIR" "$APPLICATIONS_DIR" "$APP_DIR" "$METAINFO_DIR"; do
@@ -28,6 +34,7 @@ done
 # Copy all application files to /usr/share/linsticky
 # ----------------------
 cp -r linsticky/* "$APP_DIR/"
+find "$APP_DIR" -name __pycache__ -type d -prune -exec rm -rf {} +
 
 # ----------------------
 # Read application info from JSON
@@ -70,14 +77,13 @@ Description: $DESCRIPTION
 EOL
 
 # ----------------------
-# Create DEBIAN/postinst to check PyQt6
+# Create DEBIAN/postinst to check PyGObject
 # ----------------------
 cat > "$DEBIAN_DIR/postinst" <<'EOL'
-cat > "$DEBIAN_DIR/postinst" <<'EOL'
 #!/bin/bash
-# Проверка наличия PyGObject (GTK bindings)
+# Check that PyGObject (GTK bindings) is available
 if ! python3 -c "import gi" &>/dev/null; then
-    echo "Warning: python3-gi is not installed. Please run: sudo apt install python3-gi python3-adwaita"
+    echo "Warning: python3-gi is not installed. Please run: sudo apt install python3-gi gir1.2-gtk-4.0 gir1.2-adw-1"
 fi
 EOL
 chmod +x "$DEBIAN_DIR/postinst"

@@ -18,17 +18,6 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-# linsticky/application_manager.py:214
-# /linsticky/application_manager.py:224
-#, python-brace-format
-msgid "© {year} {author}"
-msgstr "© {year} {author}"
-
-# linsticky/application_manager.py:223
-# /linsticky/application_manager.py:233
-msgid "A simple and fast sticky notes app."
-msgstr "A simple and fast sticky notes app."
-
 # linsticky/tray.py:89
 # /linsticky/tray.py:100
 msgid "Open Main Window"

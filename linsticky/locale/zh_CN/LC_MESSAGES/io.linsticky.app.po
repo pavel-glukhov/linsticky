@@ -16,15 +16,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-# /linsticky/application_manager.py:224
-#, python-brace-format
-msgid "© {year} {author}"
-msgstr "© {year} {author}"
-
-# /linsticky/application_manager.py:233
-msgid "A simple and fast sticky notes app."
-msgstr "一个简单快速的便签应用。"
-
 # /linsticky/tray.py:100
 msgid "Open Main Window"
 msgstr "打开主窗口"

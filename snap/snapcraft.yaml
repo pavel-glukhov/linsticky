@@ -1,6 +1,6 @@
 name: linsticky
 base: core24
-version: '2.0.3'
+version: '2.1.0'
 summary: Lightweight and elegant sticky notes for your Linux desktop.
 license: MIT
 description: |
@@ -11,6 +11,7 @@ description: |
               🎨 Personalization: Organize your thoughts with a custom color palette.
               🌙 Night Theme: Full support for dark mode.
               ✍️ Formatting: Full support for rich text preservation (bold, italics, lists, change color and font size).
+              Ⓜ️ Markdown: Optional Markdown notes with a rendered preview and a configurable formatting toolbar.
               🐧 Native Experience: Built with Libadwaita to look perfect on GNOME and other modern desktops.
               🌍 Multilingual: Fully localized in English, Español, Deutsch, Français, Русский, Қазақша, and more.
               
@@ -51,6 +52,10 @@ parts:
       - -README.md
       - -.gitignore
       - -LICENSE
+      - -tests
+      - -tools
+      - -RELEASING.md
+      - -.pytest_cache
 
     override-prime: |
       craftctl default
@@ -67,6 +72,8 @@ parts:
       # This is a fallback to ensure the files are present
       mkdir -p $CRAFT_PRIME/lib/python3.12/site-packages/linsticky
       cp -r $CRAFT_PART_SRC/linsticky/* $CRAFT_PRIME/lib/python3.12/site-packages/linsticky/
+      # Drop bytecode caches copied from a developer checkout.
+      find $CRAFT_PRIME/lib/python3.12/site-packages/linsticky -name __pycache__ -type d -prune -exec rm -rf {} +
       
       # Also copy the config and resources directories if they are outside the linsticky package
       # Based on the project structure, they seem to be inside, but let's be safe

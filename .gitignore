@@ -60,3 +60,6 @@ stickies.db
 /linsticky_2.0.0-beta3_amd64.snap
 /release_2.0.1
 /update_translation.sh
+
+# Local maintainer notes
+/RELEASING.md

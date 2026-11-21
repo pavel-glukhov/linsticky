@@ -9,29 +9,34 @@ import re
 from dataclasses import dataclass
 
 
+def N_(message: str) -> str:
+    """Marks a string for translation without translating it (see tools/i18n.py)."""
+    return message
+
+
 @dataclass(frozen=True)
 class ToolbarButton:
     key: str            # config key and action id
     label: str          # Pango markup shown on the button (unless icon is set)
     icon: str           # symbolic icon name, or "" to use the label
-    tooltip: str        # untranslated tooltip (translated by the UI)
+    tooltip: str        # tooltip, marked with N_() and translated by the UI
     default: bool       # shown by default
 
 
 # Order = order on the sticker toolbar and in the settings.
 MD_TOOLBAR = (
-    ToolbarButton("bold", "<b>B</b>", "", "Bold", True),
-    ToolbarButton("italic", "<i>I</i>", "", "Italic", True),
-    ToolbarButton("strikethrough", "<s>S</s>", "", "Strikethrough", True),
-    ToolbarButton("heading", "<b>H</b>", "", "Heading", True),
-    ToolbarButton("code", "<tt>&lt;&gt;</tt>", "", "Inline code", True),
-    ToolbarButton("link", "", "insert-link-symbolic", "Link", True),
-    ToolbarButton("list", "≡", "", "Bullet List", True),
-    ToolbarButton("ordered_list", "1.", "", "Numbered list", False),
-    ToolbarButton("task_list", "☑", "", "Task list", True),
-    ToolbarButton("quote", "<b>”</b>", "", "Quote", False),
-    ToolbarButton("code_block", "<tt>{ }</tt>", "", "Code block", False),
-    ToolbarButton("hr", "—", "", "Horizontal rule", False),
+    ToolbarButton("bold", "<b>B</b>", "", N_("Bold"), True),
+    ToolbarButton("italic", "<i>I</i>", "", N_("Italic"), True),
+    ToolbarButton("strikethrough", "<s>S</s>", "", N_("Strikethrough"), True),
+    ToolbarButton("heading", "<b>H</b>", "", N_("Heading"), True),
+    ToolbarButton("code", "<tt>&lt;&gt;</tt>", "", N_("Inline code"), True),
+    ToolbarButton("link", "", "insert-link-symbolic", N_("Link"), True),
+    ToolbarButton("list", "≡", "", N_("Bullet List"), True),
+    ToolbarButton("ordered_list", "1.", "", N_("Numbered list"), False),
+    ToolbarButton("task_list", "☑", "", N_("Task list"), True),
+    ToolbarButton("quote", "<b>”</b>", "", N_("Quote"), False),
+    ToolbarButton("code_block", "<tt>{ }</tt>", "", N_("Code block"), False),
+    ToolbarButton("hr", "—", "", N_("Horizontal rule"), False),
 )
 
 MD_TOOLBAR_DEFAULTS = {b.key: b.default for b in MD_TOOLBAR}
