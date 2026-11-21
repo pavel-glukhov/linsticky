@@ -17,6 +17,12 @@ _______________
 
 _______________
 
+![Text and Markdown notes](pic/example_2.2.1.png)
+
+![Text and Markdown stickers](pic/example_2.2.1_sticks.png)
+
+![Settings](pic/example_2.2.1_settings.png)
+
 ## 📑 Table of Contents
 - [What's New in 2.2.0](#-whats-new-in-220)
 - [What's New in 2.1.1](#-whats-new-in-211)
@@ -33,12 +39,6 @@ _______________
 - **Choose the note type when creating a note.** In the main window, **+** creates a note of the last chosen type and the arrow next to it offers *Text Note* or *Markdown Note*; **+** on a sticker opens the same choice. The *Markdown mode* switch is gone.
 - **Formatting buttons for both note types in Settings:** *Formatting Buttons* (text notes) and *Markdown Toolbar* (Markdown notes). A sticker's *Customize* dialog shows the buttons of its own type.
 - If Markdown mode was on in 2.1.x, **+** keeps creating Markdown notes until you pick another type.
-
-![Text and Markdown notes](pic/example_2.2.1.png)
-
-![Text and Markdown stickers](pic/example_2.2.1_sticks.png)
-
-![Settings](pic/example_2.2.1_settings.png)
 
 ## 🆕 What's New in 2.1.1
 
