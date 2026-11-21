@@ -38,7 +38,10 @@ _______________
 
 ![Text and Markdown notes](pic/example_2.2.1.png)
 
-![Settings](pic/example_2.2.1_settings.png)
+<p>
+  <img src="pic/example_2.2.1_sticks.png" alt="Text and Markdown stickers" height="400">
+  <img src="pic/example_2.2.1_settings.png" alt="Settings" height="400">
+</p>
 
 ## 🆕 What's New in 2.1.1
 
@@ -60,8 +63,6 @@ Personalize your notes by choosing colors that match your workflow and mood.
 All text formatting is reliably saved, so your notes always look exactly as intended.
 - Ⓜ️ Markdown Notes
 Create a Markdown note from the **+** menu (*Markdown Note*); text notes are never converted. Switch between source and rendered preview with the header button, `Ctrl+E`, or a double-click on the preview; the bottom toolbar inserts Markdown (its buttons are configurable). Supports headings, bold/italic/strikethrough, inline and fenced code, links, bullet/numbered/task lists, quotes and horizontal rules.
-
-  ![Text and Markdown stickers](pic/example_2.2.1_sticks.png)
 - 🌍 Multilingual Support
 Use the app in multiple languages, including:
   - English
