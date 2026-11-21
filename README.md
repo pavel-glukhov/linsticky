@@ -2,7 +2,7 @@
 
 Modern sticky notes application built with Python, GTK4, and Libadwaita for Linux.
 
-### **Version**: 2.1.0
+### **Version**: 2.1.1
 _______________
 
 > [!IMPORTANT]
@@ -20,7 +20,7 @@ _______________
 ![example of app](https://github.com/pavel-glukhov/linsticky/blob/gtk/pic/example_2.0.0.png)
 
 ## 📑 Table of Contents
-- [What's New in 2.1.0](#-whats-new-in-210)
+- [What's New in 2.1.1](#-whats-new-in-211)
 - [Features](#-features)
 - [Installation](#installation)
   - [Snap Store (Recommended)](#snap-store-recommended)
@@ -29,12 +29,15 @@ _______________
 - [Credits](#credits)
 
 
-## 🆕 What's New in 2.1.0
+## 🆕 What's New in 2.1.1
 
 - **Markdown notes (optional).** Turn on *Markdown mode* in Settings and new notes are written in Markdown, with a rendered preview and a Markdown formatting toolbar. Choose which toolbar buttons to show in Settings or in a note's *Customize* dialog.
 - **Fully compatible with 2.0.x.** Notes created in earlier 2.x versions open exactly as before and are never converted to Markdown. Markdown mode is off by default.
 - **Faster and lighter:** smoother typing in large notes, fewer disk writes, a faster note list and lower memory use with many notes.
 - **Fixes:** open notes are restored after a restart, search covers the whole note text, sticker positions are saved correctly when dragging on X11, starting the app a second time brings up the running instance, printing keeps formatting.
+- **Language and other restart-only settings** now apply with a *Restart Now* button.
+- **Snap: a single LinSticky launcher** (previous builds showed two icons and a long "starting" state).
+- **Settings show only the toolbar options of the selected mode** (regular or Markdown).
 
 ## ✨ Features
 
@@ -79,14 +82,14 @@ You can download the latest .deb package from the [Releases page](https://github
 
 ```bash
 # 1. Download the package
-curl -O -L https://github.com/pavel-glukhov/linsticky/releases/download/v2.1.0/io.linsticky.app_2.1.0_all.deb
+curl -O -L https://github.com/pavel-glukhov/linsticky/releases/download/v2.1.1/io.linsticky.app_2.1.1_all.deb
 
 # 2. Install dependencies
 sudo apt update
 sudo apt install -y python3-gi gir1.2-gtk-4.0 gir1.2-adw-1 gir1.2-gtk-3.0 gir1.2-ayatanaappindicator3-0.1 gettext
 
 # 3. Install the package
-sudo dpkg -i io.linsticky.app_2.1.0_all.deb
+sudo dpkg -i io.linsticky.app_2.1.1_all.deb
 ```
 
 ## Troubleshooting Localization
