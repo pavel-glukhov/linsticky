@@ -16,17 +16,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-# linsticky/application_manager.py:214
-# /linsticky/application_manager.py:224
-#, python-brace-format
-msgid "© {year} {author}"
-msgstr "© {year} {author}"
-
-# linsticky/application_manager.py:223
-# /linsticky/application_manager.py:233
-msgid "A simple and fast sticky notes app."
-msgstr "Қарапайым әрі жылдам стикер жазбалар қолданбасы."
-
 # linsticky/tray.py:89
 # /linsticky/tray.py:100
 msgid "Open Main Window"
@@ -71,27 +60,23 @@ msgstr "Құралдар тақтасының параметрлері"
 
 # linsticky/views/settings_view.py:144
 # /linsticky/sticky/customization_dialog.py:46
-#, fuzzy
 msgid "Bold"
-msgstr "Қалың (B)"
+msgstr "Қалың"
 
 # linsticky/views/settings_view.py:144
 # /linsticky/sticky/customization_dialog.py:47
-#, fuzzy
 msgid "Italic"
-msgstr "Көлбеу (I)"
+msgstr "Көлбеу"
 
 # linsticky/views/settings_view.py:145
 # /linsticky/sticky/customization_dialog.py:48
-#, fuzzy
 msgid "Underline"
-msgstr "Асты сызылған (U)"
+msgstr "Асты сызылған"
 
 # linsticky/views/settings_view.py:145
 # /linsticky/sticky/customization_dialog.py:49
-#, fuzzy
 msgid "Strikethrough"
-msgstr "Сызылған (S)"
+msgstr "Сызылған"
 
 # linsticky/views/settings_view.py:146
 # /linsticky/sticky/customization_dialog.py:50
@@ -320,3 +305,64 @@ msgstr ""
 # /linsticky/views/settings_view.py:324
 msgid "OK"
 msgstr "OK"
+
+# linsticky/views/settings_view.py
+# linsticky/sticky/customization_dialog.py
+msgid "Markdown mode"
+msgstr "Markdown режимі"
+
+# linsticky/sticky/sticky_markdown.py
+msgid "Edit (Ctrl+E)"
+msgstr "Өңдеу (Ctrl+E)"
+
+# linsticky/sticky/sticky_markdown.py
+msgid "Preview (Ctrl+E)"
+msgstr "Алдын ала қарау (Ctrl+E)"
+
+# linsticky/content/markdown_edit.py
+msgid "Heading"
+msgstr "Тақырып"
+
+# linsticky/content/markdown_edit.py
+msgid "Inline code"
+msgstr "Жолдағы код"
+
+# linsticky/content/markdown_edit.py
+msgid "Link"
+msgstr "Сілтеме"
+
+# linsticky/content/markdown_edit.py
+msgid "Numbered list"
+msgstr "Нөмірленген тізім"
+
+# linsticky/content/markdown_edit.py
+msgid "Task list"
+msgstr "Тапсырмалар тізімі"
+
+# linsticky/content/markdown_edit.py
+msgid "Quote"
+msgstr "Дәйексөз"
+
+# linsticky/content/markdown_edit.py
+msgid "Code block"
+msgstr "Код блогы"
+
+# linsticky/content/markdown_edit.py
+msgid "Horizontal rule"
+msgstr "Көлденең сызық"
+
+# linsticky/sticky/customization_dialog.py
+msgid "Markdown Toolbar"
+msgstr "Markdown құралдар тақтасы"
+
+# linsticky/views/settings_view.py
+msgid "New notes are created in Markdown; existing notes are not changed"
+msgstr "Жаңа жазбалар Markdown-да жасалады; бұрынғылары өзгермейді"
+
+# linsticky/views/settings_view.py:391
+msgid "Later"
+msgstr "Кейінірек"
+
+# linsticky/views/settings_view.py:392
+msgid "Restart Now"
+msgstr "Қазір қайта іске қосу"

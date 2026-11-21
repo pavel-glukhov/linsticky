@@ -44,6 +44,9 @@ class StickyFormatting:
         Args:
             tag_name: The name of the tag to apply or remove.
         """
+        if getattr(self, "is_markdown", False):
+            self.md_wrap_selection(tag_name)
+            return
         bounds = self.buffer.get_selection_bounds()
         if not bounds:
             return
@@ -105,7 +108,7 @@ class StickyFormatting:
         # Apply the new size tag.
         self.buffer.apply_tag_by_name(f"font_size_{size}", start, end)
 
-        if hasattr(self, 'btn_font_size'):
+        if getattr(self, 'btn_font_size', None) is not None:
             self.btn_font_size.set_label(str(size))
 
         self.text_view.grab_focus()
@@ -118,6 +121,9 @@ class StickyFormatting:
         If a line starts with a bullet, it's removed. Otherwise, a bullet is added.
         This operation is performed on all lines within the selection.
         """
+        if getattr(self, "is_markdown", False):
+            self.md_toolbar_action("list")
+            return
         BULLET_CHAR = " • "
         res = self.buffer.get_selection_bounds()
 

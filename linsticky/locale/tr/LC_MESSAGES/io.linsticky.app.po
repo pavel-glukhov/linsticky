@@ -17,17 +17,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-# linsticky/application_manager.py:214
-# /linsticky/application_manager.py:224
-#, python-brace-format
-msgid "© {year} {author}"
-msgstr "© {year} {author}"
-
-# linsticky/application_manager.py:223
-# /linsticky/application_manager.py:233
-msgid "A simple and fast sticky notes app."
-msgstr "Basit ve hızlı bir yapışkan not uygulaması."
-
 # linsticky/tray.py:89
 # /linsticky/tray.py:100
 msgid "Open Main Window"
@@ -72,27 +61,23 @@ msgstr "Araç Çubuğu Seçenekleri"
 
 # linsticky/views/settings_view.py:144
 # /linsticky/sticky/customization_dialog.py:46
-#, fuzzy
 msgid "Bold"
-msgstr "Kalın (B)"
+msgstr "Kalın"
 
 # linsticky/views/settings_view.py:144
 # /linsticky/sticky/customization_dialog.py:47
-#, fuzzy
 msgid "Italic"
-msgstr "İtalik (I)"
+msgstr "İtalik"
 
 # linsticky/views/settings_view.py:145
 # /linsticky/sticky/customization_dialog.py:48
-#, fuzzy
 msgid "Underline"
-msgstr "Altı Çizili (U)"
+msgstr "Altı Çizili"
 
 # linsticky/views/settings_view.py:145
 # /linsticky/sticky/customization_dialog.py:49
-#, fuzzy
 msgid "Strikethrough"
-msgstr "Üstü Çizili (S)"
+msgstr "Üstü Çizili"
 
 # linsticky/views/settings_view.py:146
 # /linsticky/sticky/customization_dialog.py:50
@@ -322,3 +307,64 @@ msgstr ""
 # /linsticky/views/settings_view.py:324
 msgid "OK"
 msgstr "Tamam"
+
+# linsticky/views/settings_view.py
+# linsticky/sticky/customization_dialog.py
+msgid "Markdown mode"
+msgstr "Markdown modu"
+
+# linsticky/sticky/sticky_markdown.py
+msgid "Edit (Ctrl+E)"
+msgstr "Düzenle (Ctrl+E)"
+
+# linsticky/sticky/sticky_markdown.py
+msgid "Preview (Ctrl+E)"
+msgstr "Önizleme (Ctrl+E)"
+
+# linsticky/content/markdown_edit.py
+msgid "Heading"
+msgstr "Başlık"
+
+# linsticky/content/markdown_edit.py
+msgid "Inline code"
+msgstr "Satır içi kod"
+
+# linsticky/content/markdown_edit.py
+msgid "Link"
+msgstr "Bağlantı"
+
+# linsticky/content/markdown_edit.py
+msgid "Numbered list"
+msgstr "Numaralı liste"
+
+# linsticky/content/markdown_edit.py
+msgid "Task list"
+msgstr "Görev listesi"
+
+# linsticky/content/markdown_edit.py
+msgid "Quote"
+msgstr "Alıntı"
+
+# linsticky/content/markdown_edit.py
+msgid "Code block"
+msgstr "Kod bloğu"
+
+# linsticky/content/markdown_edit.py
+msgid "Horizontal rule"
+msgstr "Yatay çizgi"
+
+# linsticky/sticky/customization_dialog.py
+msgid "Markdown Toolbar"
+msgstr "Markdown araç çubuğu"
+
+# linsticky/views/settings_view.py
+msgid "New notes are created in Markdown; existing notes are not changed"
+msgstr "Yeni notlar Markdown ile oluşturulur; mevcut notlar değişmez"
+
+# linsticky/views/settings_view.py:391
+msgid "Later"
+msgstr "Daha sonra"
+
+# linsticky/views/settings_view.py:392
+msgid "Restart Now"
+msgstr "Şimdi yeniden başlat"

@@ -16,15 +16,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-# /linsticky/application_manager.py:224
-#, python-brace-format
-msgid "© {year} {author}"
-msgstr "© {year} {author}"
-
-# /linsticky/application_manager.py:233
-msgid "A simple and fast sticky notes app."
-msgstr "一个简单快速的便签应用。"
-
 # /linsticky/tray.py:100
 msgid "Open Main Window"
 msgstr "打开主窗口"
@@ -257,3 +248,64 @@ msgstr "某些更改需要重启应用程序才能完全生效。"
 # /linsticky/views/settings_view.py:324
 msgid "OK"
 msgstr "确定"
+
+# linsticky/views/settings_view.py
+# linsticky/sticky/customization_dialog.py
+msgid "Markdown mode"
+msgstr "Markdown 模式"
+
+# linsticky/sticky/sticky_markdown.py
+msgid "Edit (Ctrl+E)"
+msgstr "编辑 (Ctrl+E)"
+
+# linsticky/sticky/sticky_markdown.py
+msgid "Preview (Ctrl+E)"
+msgstr "预览 (Ctrl+E)"
+
+# linsticky/content/markdown_edit.py
+msgid "Heading"
+msgstr "标题"
+
+# linsticky/content/markdown_edit.py
+msgid "Inline code"
+msgstr "行内代码"
+
+# linsticky/content/markdown_edit.py
+msgid "Link"
+msgstr "链接"
+
+# linsticky/content/markdown_edit.py
+msgid "Numbered list"
+msgstr "编号列表"
+
+# linsticky/content/markdown_edit.py
+msgid "Task list"
+msgstr "任务列表"
+
+# linsticky/content/markdown_edit.py
+msgid "Quote"
+msgstr "引用"
+
+# linsticky/content/markdown_edit.py
+msgid "Code block"
+msgstr "代码块"
+
+# linsticky/content/markdown_edit.py
+msgid "Horizontal rule"
+msgstr "水平线"
+
+# linsticky/sticky/customization_dialog.py
+msgid "Markdown Toolbar"
+msgstr "Markdown 工具栏"
+
+# linsticky/views/settings_view.py
+msgid "New notes are created in Markdown; existing notes are not changed"
+msgstr "新便笺以 Markdown 创建；现有便笺保持不变"
+
+# linsticky/views/settings_view.py:391
+msgid "Later"
+msgstr "稍后"
+
+# linsticky/views/settings_view.py:392
+msgid "Restart Now"
+msgstr "立即重启"

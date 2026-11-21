@@ -9,6 +9,8 @@ Snap packages.
 import os
 import json
 
+from content.markdown_edit import MD_TOOLBAR_DEFAULTS
+
 # --- Configuration Path Setup ---
 # Compatibility Note:
 # This logic determines where the `config.json` file is stored.
@@ -67,6 +69,13 @@ class ConfigManager:
                 "bold": True, "italic": True, "underline": True,
                 "strikethrough": True, "list": True, "text_color": True,
                 "font_size": True
+            },
+            # Markdown notes: whether NEW notes are created in Markdown (off by
+            # default, so an update changes nothing), and which buttons the
+            # sticker toolbar shows for Markdown notes.
+            "markdown": {
+                "enabled": False,
+                "buttons": dict(MD_TOOLBAR_DEFAULTS),
             }
         }
 
@@ -105,10 +114,26 @@ class ConfigManager:
             if not isinstance(config.get("formatting"), dict):
                 config["formatting"] = defaults["formatting"]
 
+            config["markdown"] = cls._merge_markdown(defaults["markdown"], loaded_config)
+            config["formatting"].pop("markdown", None)
+
             return config
         except (json.JSONDecodeError, OSError) as e:
             print(f"WARNING: Error loading '{CONF_PATH}'. Resetting to defaults. Error: {e}")
             return defaults
+
+    @staticmethod
+    def _merge_markdown(default: dict, loaded_config: dict) -> dict:
+        """Returns the Markdown settings with defaults for missing keys."""
+        result = {"enabled": default["enabled"], "buttons": dict(default["buttons"])}
+        loaded = loaded_config.get("markdown")
+        if isinstance(loaded, dict):
+            if isinstance(loaded.get("enabled"), bool):
+                result["enabled"] = loaded["enabled"]
+            if isinstance(loaded.get("buttons"), dict):
+                result["buttons"].update(
+                    {k: bool(v) for k, v in loaded["buttons"].items() if k in result["buttons"]})
+        return result
 
     @staticmethod
     def save(config_dict: dict):

@@ -1,8 +1,6 @@
 import sqlite3
 import os
 from datetime import datetime
-from config.config import get_app_paths
-from config.config_manager import ConfigManager
 
 
 class NotesDB:
@@ -46,7 +44,8 @@ class NotesDB:
                                   deleted_at TEXT,
                                   always_on_top INTEGER DEFAULT 0,
                                   is_open INTEGER DEFAULT 0,
-                                  is_pinned INTEGER DEFAULT 0
+                                  is_pinned INTEGER DEFAULT 0,
+                                  is_markdown INTEGER DEFAULT 0
                               )
                               """)
 
@@ -74,12 +73,15 @@ class NotesDB:
                 self.conn.execute("ALTER TABLE notes ADD COLUMN h INTEGER DEFAULT 300")
             if "is_pinned" not in columns:
                 self.conn.execute("ALTER TABLE notes ADD COLUMN is_pinned INTEGER DEFAULT 0")
+            if "is_markdown" not in columns:
+                self.conn.execute("ALTER TABLE notes ADD COLUMN is_markdown INTEGER DEFAULT 0")
 
     def add(self, title: str = None, content: str = "",
             x: int = 300, y: int = 200,
             w: int = 260, h: int = 200,
             color: str = "#FFF59D",
-            always_on_top: int = 0) -> int:
+            always_on_top: int = 0,
+            is_markdown: bool = False) -> int:
         """
         Adds a new note to the database.
         Args:
@@ -91,6 +93,8 @@ class NotesDB:
             h (int, optional): Height of the note window. Defaults to 200.
             color (str, optional): Background color of the note. Defaults to "#FFF59D".
             always_on_top (int, optional): Whether the note is always on top (0 or 1). Defaults to 0.
+            is_markdown (bool, optional): Create the note in Markdown mode. The mode is
+                fixed at creation, so notes from older versions always stay rich text.
         Returns:
             int: The ID of the newly added note.
         """
@@ -100,16 +104,16 @@ class NotesDB:
             title = f"Sticker {count + 1}"
         with self.conn:
             cur = self.conn.execute(
-                "INSERT INTO notes(title, content, x, y, w, h, color, always_on_top) "
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-                (title, content, x, y, w, h, color, always_on_top)
+                "INSERT INTO notes(title, content, x, y, w, h, color, always_on_top, is_markdown) "
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                (title, content, x, y, w, h, color, always_on_top, 1 if is_markdown else 0)
             )
             return cur.lastrowid
 
     def update(self, note_id: int, content: str,
                x: int, y: int, w: int,
                h: int, color: str,
-               always_on_top: int = 0):
+               always_on_top: int = None):
         """
         Updates an existing note's properties in the database.
         Args:
@@ -120,13 +124,20 @@ class NotesDB:
             w (int): Width of the note window.
             h (int): Height of the note window.
             color (str): Background color of the note.
-            always_on_top (int, optional): Whether the note is always on top (0 or 1). Defaults to 0.
+            always_on_top (int, optional): Whether the note is always on top (0 or 1).
+                If None (default), the stored value is left unchanged.
         """
         with self.conn:
-            self.conn.execute(
-                "UPDATE notes SET content=?, x=?, y=?, w=?, h=?, color=?, always_on_top=? WHERE id=?",
-                (content, x, y, w, h, color, always_on_top, note_id)
-            )
+            if always_on_top is None:
+                self.conn.execute(
+                    "UPDATE notes SET content=?, x=?, y=?, w=?, h=?, color=? WHERE id=?",
+                    (content, x, y, w, h, color, note_id)
+                )
+            else:
+                self.conn.execute(
+                    "UPDATE notes SET content=?, x=?, y=?, w=?, h=?, color=?, always_on_top=? WHERE id=?",
+                    (content, x, y, w, h, color, always_on_top, note_id)
+                )
 
     def get(self, note_id: int) -> sqlite3.Row:
         """
@@ -180,6 +191,11 @@ class NotesDB:
         """
         cur = self.conn.execute("SELECT * FROM notes WHERE deleted=1")
         return cur.fetchall()
+
+    def empty_trash(self):
+        """Permanently deletes every note that is in the trash, in one transaction."""
+        with self.conn:
+            self.conn.execute("DELETE FROM notes WHERE deleted=1")
 
     def restore_from_trash(self, note_id: int):
         """

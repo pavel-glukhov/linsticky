@@ -12,7 +12,6 @@ import os
 import sys
 import threading
 import subprocess
-from datetime import datetime
 import builtins
 
 from gi.repository import Gtk, Adw, Gdk, GLib
@@ -253,8 +252,15 @@ class ApplicationManager:
         """
         if self.tray_process:
             self.tray_process.terminate()
+            try:
+                self.tray_process.wait(timeout=2)
+            except subprocess.TimeoutExpired:
+                self.tray_process.kill()
+                self.tray_process.wait()
+            self.tray_process = None
         
         if self.main_window:
+            self.main_window.is_quitting = True
             # Close all individual sticky note windows first.
             for note_id in list(self.main_window.stickies.keys()):
                 win = self.main_window.stickies.get(note_id)

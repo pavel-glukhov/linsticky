@@ -8,6 +8,8 @@ text area, menus, and resize handle.
 from gi.repository import Gtk, Gdk
 import builtins
 
+import theme
+
 if not hasattr(builtins, "_"):
     builtins._ = lambda s: s
 
@@ -51,9 +53,10 @@ class StickyUI:
         header_drag = Gtk.GestureDrag.new()
         header_drag.connect("drag-begin", self._on_header_drag_begin)
         header_drag.connect("drag-update", self._on_header_drag_update)
-        header_drag.connect("drag-end", self._on_header_drag_end)
         spacer.add_controller(header_drag)
         self.header_box.append(spacer)
+
+        self.header_box.append(self.create_markdown_toggle_button())
 
         btn_menu = Gtk.MenuButton(has_frame=False, icon_name="open-menu-symbolic")
         btn_menu.add_css_class("header-btn-subtle")
@@ -85,9 +88,7 @@ class StickyUI:
         for i, color in enumerate(self.config.get("palette", [])):
             b = Gtk.Button()
             b.set_size_request(btn_size, btn_size)
-            cp = Gtk.CssProvider()
-            cp.load_from_data(f"button {{ background-color: {color}; border-radius: 50%; border: 1px solid rgba(0,0,0,0.2); }}".encode())
-            b.get_style_context().add_provider(cp, Gtk.STYLE_PROVIDER_PRIORITY_USER)
+            theme.apply_swatch(b, color, "round")
             b.connect("clicked", lambda _, c=color: (self.apply_color(c), popover.popdown()))
             grid.attach(b, i % 4, i // 4, 1, 1)
         self.menu_vbox.append(grid)
@@ -105,6 +106,7 @@ class StickyUI:
         click_custom.connect("released", lambda *args: (self.on_customization_clicked(None), popover.popdown()))
         box_custom.add_controller(click_custom)
         self.menu_vbox.append(box_custom)
+
 
         # Print Menu Item
         box_print = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10, margin_top=5, margin_bottom=5, margin_start=5, margin_end=5)
@@ -130,9 +132,7 @@ class StickyUI:
         for i, color in enumerate(self.config.get("text_colors", [])):
             b = Gtk.Button()
             b.set_size_request(btn_size, btn_size)
-            cp = Gtk.CssProvider()
-            cp.load_from_data(f"button {{ background-color: {color}; border-radius: 3px; }}".encode())
-            b.get_style_context().add_provider(cp, Gtk.STYLE_PROVIDER_PRIORITY_USER)
+            theme.apply_swatch(b, color, "square")
             b.connect("clicked", lambda _, c=color: (self.apply_text_color(c), popover.popdown()))
             grid.attach(b, i % 4, i // 4, 1, 1)
 
@@ -174,6 +174,8 @@ class StickyUI:
         """
         Applies a new background color to the note and updates the live preview card.
         """
+        if hex_color != self.current_color and not getattr(self, '_loading', True):
+            self._dirty = True
         self.current_color = hex_color
         self._update_ui_design()
         if self.main_window:
@@ -199,6 +201,7 @@ class StickyUI:
         self.text_view = Gtk.TextView(wrap_mode=Gtk.WrapMode.WORD_CHAR)
         self.text_view.add_css_class("sticky-text-edit")
         self.buffer = self.text_view.get_buffer()
+        # The only "changed" handler: marks the note dirty and schedules the preview update.
         self.buffer.connect("changed", self._on_buffer_changed)
 
         # Attach the key controller directly to the text view.
@@ -207,4 +210,8 @@ class StickyUI:
         self.text_view.add_controller(key_ctrl)
 
         self.scrolled = Gtk.ScrolledWindow(child=self.text_view, vexpand=True)
-        self.main_box.append(self.scrolled)
+        # The stack holds the editor ("edit") and, for Markdown notes, the
+        # rendered preview ("preview", added by StickyMarkdown).
+        self.content_stack = Gtk.Stack(vexpand=True)
+        self.content_stack.add_named(self.scrolled, "edit")
+        self.main_box.append(self.content_stack)

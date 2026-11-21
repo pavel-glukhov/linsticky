@@ -4,8 +4,10 @@ Application-wide Constants and Path Definitions.
 This module centralizes the definition of paths, metadata, and other constants
 used throughout the application.
 """
+import copy
 import json
 import os
+from functools import lru_cache
 
 # --- Path Constants ---
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -61,15 +63,21 @@ def get_supported_languages() -> dict:
             languages[display_name] = lang_code
     return languages
 
+@lru_cache(maxsize=1)
+def _read_app_info() -> dict:
+    with open(APP_INFO_FILE, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+
 def load_app_info() -> dict:
     """
     Loads application metadata (version, author, etc.) from app_info.json.
+    The file is read once per process; callers get their own copy.
 
     Returns:
         A dictionary containing the application's metadata.
     """
-    with open(APP_INFO_FILE, "r", encoding="utf-8") as f:
-        return json.load(f)
+    return copy.deepcopy(_read_app_info())
 
 def get_app_paths(user_config: dict) -> dict:
     """

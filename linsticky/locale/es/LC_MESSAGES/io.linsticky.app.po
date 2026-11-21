@@ -17,17 +17,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-# linsticky/application_manager.py:214
-# /linsticky/application_manager.py:224
-#, python-brace-format
-msgid "© {year} {author}"
-msgstr "© {year} {author}"
-
-# linsticky/application_manager.py:223
-# /linsticky/application_manager.py:233
-msgid "A simple and fast sticky notes app."
-msgstr "Una aplicación de notas adhesivas simple y rápida."
-
 # linsticky/tray.py:89
 # /linsticky/tray.py:100
 msgid "Open Main Window"
@@ -72,27 +61,23 @@ msgstr "Opciones de la barra de herramientas"
 
 # linsticky/views/settings_view.py:144
 # /linsticky/sticky/customization_dialog.py:46
-#, fuzzy
 msgid "Bold"
-msgstr "Negrita (B)"
+msgstr "Negrita"
 
 # linsticky/views/settings_view.py:144
 # /linsticky/sticky/customization_dialog.py:47
-#, fuzzy
 msgid "Italic"
-msgstr "Cursiva (I)"
+msgstr "Cursiva"
 
 # linsticky/views/settings_view.py:145
 # /linsticky/sticky/customization_dialog.py:48
-#, fuzzy
 msgid "Underline"
-msgstr "Subrayado (U)"
+msgstr "Subrayado"
 
 # linsticky/views/settings_view.py:145
 # /linsticky/sticky/customization_dialog.py:49
-#, fuzzy
 msgid "Strikethrough"
-msgstr "Tachado (S)"
+msgstr "Tachado"
 
 # linsticky/views/settings_view.py:146
 # /linsticky/sticky/customization_dialog.py:50
@@ -324,3 +309,64 @@ msgstr ""
 # /linsticky/views/settings_view.py:324
 msgid "OK"
 msgstr "OK"
+
+# linsticky/views/settings_view.py
+# linsticky/sticky/customization_dialog.py
+msgid "Markdown mode"
+msgstr "Modo Markdown"
+
+# linsticky/sticky/sticky_markdown.py
+msgid "Edit (Ctrl+E)"
+msgstr "Editar (Ctrl+E)"
+
+# linsticky/sticky/sticky_markdown.py
+msgid "Preview (Ctrl+E)"
+msgstr "Vista previa (Ctrl+E)"
+
+# linsticky/content/markdown_edit.py
+msgid "Heading"
+msgstr "Encabezado"
+
+# linsticky/content/markdown_edit.py
+msgid "Inline code"
+msgstr "Código en línea"
+
+# linsticky/content/markdown_edit.py
+msgid "Link"
+msgstr "Enlace"
+
+# linsticky/content/markdown_edit.py
+msgid "Numbered list"
+msgstr "Lista numerada"
+
+# linsticky/content/markdown_edit.py
+msgid "Task list"
+msgstr "Lista de tareas"
+
+# linsticky/content/markdown_edit.py
+msgid "Quote"
+msgstr "Cita"
+
+# linsticky/content/markdown_edit.py
+msgid "Code block"
+msgstr "Bloque de código"
+
+# linsticky/content/markdown_edit.py
+msgid "Horizontal rule"
+msgstr "Línea horizontal"
+
+# linsticky/sticky/customization_dialog.py
+msgid "Markdown Toolbar"
+msgstr "Barra de Markdown"
+
+# linsticky/views/settings_view.py
+msgid "New notes are created in Markdown; existing notes are not changed"
+msgstr "Las notas nuevas se crean en Markdown; las existentes no cambian"
+
+# linsticky/views/settings_view.py:391
+msgid "Later"
+msgstr "Más tarde"
+
+# linsticky/views/settings_view.py:392
+msgid "Restart Now"
+msgstr "Reiniciar ahora"

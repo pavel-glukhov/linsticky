@@ -5,7 +5,10 @@ This module contains the mixin class responsible for handling all user
 interactions with a sticky note, including button clicks, drag-and-drop
 for moving, resizing gestures, and keyboard shortcuts.
 """
-from gi.repository import Gtk, Gdk
+from gi.repository import Gtk, Gdk, GLib
+
+# Delay before the main window preview card is refreshed after typing.
+PREVIEW_UPDATE_DELAY_MS = 250
 
 
 class StickyEvents:
@@ -25,9 +28,9 @@ class StickyEvents:
 
     def _on_close_clicked(self, button: Gtk.Button):
         """
-        Handles the 'close' button click, ensuring the note is saved before closing.
+        Handles the 'close' button click. The note is saved by the
+        close-request handler, so no separate save is needed here.
         """
-        self.save()
         self.close()
 
     def _on_resize_pressed(self, gesture: Gtk.GestureClick, n_press: int, x: float, y: float):
@@ -55,6 +58,9 @@ class StickyEvents:
         """
         Begins a native window move operation when the header area is dragged.
         """
+        # Remember where the note was when the drag started: drag-update
+        # reports the offset from this point, not from the previous event.
+        self._drag_origin = (self.saved_x, self.saved_y)
         surface = self.get_native().get_surface()
         if surface:
             surface.begin_move(gesture.get_device(), Gdk.BUTTON_PRIMARY, x, y, Gdk.CURRENT_TIME)
@@ -65,17 +71,10 @@ class StickyEvents:
         This is primarily for X11 compatibility where continuous updates are needed.
         """
         if "X11" in Gdk.Display.get_default().__class__.__name__:
-            self.saved_x += dx
-            self.saved_y += dy
-
-    def _on_header_drag_end(self, gesture: Gtk.GestureDrag, dx: float, dy: float):
-        """
-        Finalizes the note's position after a drag operation is complete.
-        """
-        # The final position is implicitly handled by the window manager in Wayland.
-        # For X11, the continuous updates in `_on_header_drag_update` are sufficient.
-        # This method is kept for potential future logic.
-        pass
+            origin_x, origin_y = getattr(self, "_drag_origin", (self.saved_x, self.saved_y))
+            self.saved_x = int(origin_x + dx)
+            self.saved_y = int(origin_y + dy)
+            self._dirty = True
 
     def _on_map(self, widget: Gtk.Widget):
         """
@@ -86,13 +85,25 @@ class StickyEvents:
 
     def _on_buffer_changed(self, buffer: Gtk.TextBuffer):
         """
-        Handles the 'changed' signal from the text buffer to update the main
-        window's preview card in real-time.
+        Marks the note as modified and schedules a refresh of the main
+        window's preview card.
+
+        The preview used to be regenerated synchronously (and twice, because
+        the signal was connected twice) on every key press. It is now coalesced
+        into at most one update per PREVIEW_UPDATE_DELAY_MS.
         """
-        if not getattr(self, '_loading', True) and self.main_window:
-            # Pass the raw segment data for real-time preview generation.
-            segments = self._get_buffer_segments()
-            self.main_window.update_card_text(self.note_id, segments)
+        if getattr(self, '_loading', True):
+            return
+        self._dirty = True
+        if self.main_window and self._preview_timer_id is None:
+            self._preview_timer_id = GLib.timeout_add(PREVIEW_UPDATE_DELAY_MS, self._flush_preview_update)
+
+    def _flush_preview_update(self) -> bool:
+        """Pushes the current content to the main window preview card."""
+        self._preview_timer_id = None
+        if not self._is_destroying and self.main_window:
+            self.main_window.update_card_text(self.note_id, self._get_buffer_segments())
+        return False
 
     def _on_key_pressed(self, controller, keyval, keycode, state) -> bool:
         """

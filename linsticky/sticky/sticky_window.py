@@ -5,16 +5,18 @@ This module defines the `StickyWindow` class, which is the core component for
 displaying and interacting with a single note. It integrates multiple mixins
 for handling UI, events, actions, and text formatting to keep the code modular.
 """
-import gi
-from gi.repository import Gtk, Gdk, GLib, Adw
+from gi.repository import Gtk, GLib, Adw
+
+import theme
 
 from .sticky_formatting import StickyFormatting
 from .sticky_actions import StickyActions
 from .sticky_ui import StickyUI
 from .sticky_events import StickyEvents
+from .sticky_markdown import StickyMarkdown
 
 
-class StickyWindow(Adw.Window, StickyFormatting, StickyActions, StickyUI, StickyEvents):
+class StickyWindow(Adw.Window, StickyFormatting, StickyActions, StickyUI, StickyEvents, StickyMarkdown):
     """
     Represents a single sticky note window.
 
@@ -41,6 +43,12 @@ class StickyWindow(Adw.Window, StickyFormatting, StickyActions, StickyUI, Sticky
         self.config = getattr(main_window, 'config', {})
         self._loading = True
         self._is_destroying = False
+        # Set whenever content, color or geometry changes; the periodic save
+        # only touches the database when this flag is raised.
+        self._dirty = False
+        self._preview_timer_id = None
+        self.btn_font_size = None
+        self.is_markdown = False
         self.scale = 1.0
         self.current_color = "#FFF59D"
         self.default_font_size = 12
@@ -71,6 +79,7 @@ class StickyWindow(Adw.Window, StickyFormatting, StickyActions, StickyUI, Sticky
         self.apply_styles()
         self.setup_header()
         self.setup_text_area() # This now also sets up the key controller
+        self.setup_markdown_preview()
         self.setup_tags()
         self.setup_formatting_bar()
         self.setup_resize_handle()
@@ -79,6 +88,10 @@ class StickyWindow(Adw.Window, StickyFormatting, StickyActions, StickyUI, Sticky
         self.load_from_db()
         self._loading = False
         self._connect_main_signals()
+        if self.is_markdown:
+            # Markdown notes open in the rendered preview when they have content.
+            self.md_preview_active = bool(self._get_buffer_text().strip())
+            self.sync_markdown_ui()
 
         # --- Event and Persistence Controllers ---
         focus_ctrl = Gtk.EventControllerFocus()
@@ -89,24 +102,10 @@ class StickyWindow(Adw.Window, StickyFormatting, StickyActions, StickyUI, Sticky
 
     def apply_styles(self):
         """
-        Applies custom CSS globally to ensure it overrides system themes.
-        
-        Compatibility Note:
-        Using `Gtk.StyleContext.add_provider_for_display` is the most reliable
-        way to apply custom styles that work consistently across different themes
-        and packaging formats (DEB/Snap). It ensures our styles have high enough
-        priority to override defaults provided by Adwaita.
+        Registers the shared stylesheet (once per process) and paints the note.
+        See `theme.py` for why providers are no longer created per window.
         """
-        css_provider = Gtk.CssProvider()
-        # This CSS makes the default Adw.Window background transparent,
-        # allowing our custom-colored `main_box` to be visible.
-        css = "window.background.sticky-window { background-color: transparent; }"
-        css_provider.load_from_data(css.encode('utf-8'))
-        Gtk.StyleContext.add_provider_for_display(
-            Gdk.Display.get_default(),
-            css_provider,
-            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
-        )
+        theme.ensure_static_css()
         self.add_css_class("sticky-window")
         self._update_ui_design()
 
@@ -117,67 +116,38 @@ class StickyWindow(Adw.Window, StickyFormatting, StickyActions, StickyUI, Sticky
         self.connect("notify::default-width", self._on_configure_event)
         self.connect("notify::default-height", self._on_configure_event)
         self.buffer.connect("notify::cursor-position", self.on_cursor_moved)
-        self.buffer.connect("changed", self._on_buffer_changed)
 
     def _on_configure_event(self, *args):
         """Updates the internal state with the new window dimensions for saving."""
-        self.saved_width = self.get_default_size()[0]
-        self.saved_height = self.get_default_size()[1]
+        width, height = self.get_default_size()
+        if (width, height) != (self.saved_width, self.saved_height):
+            self.saved_width, self.saved_height = width, height
+            self._dirty = True
 
     def _update_ui_design(self, hex_color=None):
         """
-        Updates the background color of the note.
+        Updates the background color of the note by swapping its color class.
         """
         if hex_color:
             self.current_color = hex_color.strip()
-        
-        bg_color = self.current_color or "#FFF59D"
-        
-        # --- Update Main Note Body ---
-        for c in self.main_box.get_css_classes():
-            if c.startswith("note-color-"):
-                self.main_box.remove_css_class(c)
-        
-        color_class = f'note-color-{bg_color.replace("#", "")}'
-        self.main_box.add_css_class(color_class)
-        
-        # --- Update Global Styles ---
-        style_provider = Gtk.CssProvider()
-        style_provider.load_from_data(f"""
-        .sticky-main-area.{color_class} {{
-            background-color: {bg_color};
-            border-radius: 12px;
-        }}
-        .sticky-window textview {{
-            color: #000000;
-            caret-color: #000000;
-        }}
-        .sticky-window textview text {{
-            color: #000000;
-        }}
-        .sticky-window .compact-header button, 
-        .sticky-window .compact-format-bar button {{
-            color: rgba(0, 0, 0, 0.8);
-        }}
-        """.encode('utf-8'))
-        
-        Gtk.StyleContext.add_provider_for_display(
-            Gdk.Display.get_default(),
-            style_provider,
-            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
-        )
+        theme.apply_note_color(self.main_box, self.current_color or theme.DEFAULT_NOTE_COLOR)
 
     def setup_formatting_bar(self):
         """Constructs or reconstructs the bottom text formatting toolbar."""
         if hasattr(self, 'format_bar') and self.format_bar.get_parent():
             self.main_box.remove(self.format_bar)
 
+        self.btn_font_size = None
         self.format_bar = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
         self.format_bar.add_css_class("compact-format-bar")
         self.main_box.append(self.format_bar)
 
         scale = self.scale
         icon_size = int(18 * scale)
+        if self.is_markdown:
+            # Same bar, but with Markdown buttons that insert markup.
+            self.build_markdown_toolbar(icon_size)
+            return
         fmt_config = self.config.get("formatting", {})
         if not isinstance(fmt_config, dict): fmt_config = {}
 
@@ -227,7 +197,7 @@ class StickyWindow(Adw.Window, StickyFormatting, StickyActions, StickyUI, Sticky
 
     def on_cursor_moved(self, buffer, pspec):
         """Updates the font size indicator in the UI based on the cursor's position."""
-        if not hasattr(self, 'btn_font_size'):
+        if self.btn_font_size is None:
             return
         cursor_iter = buffer.get_iter_at_mark(buffer.get_insert())
         tags = cursor_iter.get_tags()
@@ -253,4 +223,4 @@ class StickyWindow(Adw.Window, StickyFormatting, StickyActions, StickyUI, Sticky
             self.main_box.remove(self.header_box)
         self.setup_header()
         self.main_box.reorder_child_after(self.header_box, None)
-        self.setup_formatting_bar()
+        self.sync_markdown_ui()

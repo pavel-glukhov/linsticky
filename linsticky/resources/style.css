@@ -247,3 +247,16 @@ scrolledwindow scrollbar:hover {
 .force-black-pin image {
     color: #000000;
 }
+
+/**
+ * @class .sticky-md-preview
+ * @brief Rendered Markdown preview of a note.
+ *
+ * Mirrors the editor (padding, text size and color) so switching between
+ * source and preview does not shift the text.
+ */
+.sticky-md-preview {
+    padding: 4px 12px;
+    color: #000000;
+    font-size: 15px;
+}

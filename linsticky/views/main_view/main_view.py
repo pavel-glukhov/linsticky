@@ -1,9 +1,10 @@
 import builtins
-from gi.repository import Gtk, Adw, Gio, Gdk, GLib
+from gi.repository import Gtk, Adw, Gio, GLib
 from views.main_view.note_card import NoteCard
 from sticky.sticky_window import StickyWindow
 from views.settings_view import SettingsView
 from views.trash_view import TrashView
+import theme
 
 _ = builtins._
 
@@ -28,15 +29,16 @@ class MainWindow(Adw.ApplicationWindow):
         self.db = db
         self.config = application.config
         self.stickies = {}
+        # note_id -> NoteCard, so single cards can be updated without scanning
+        # or rebuilding the whole list.
+        self.cards = {}
+        self._search_query = ""
+        # Set while the application shuts down, so notes closed by the quit
+        # keep their "open" flag and are restored on the next start.
+        self.is_quitting = False
 
-        css_provider = Gtk.CssProvider()
-        css = """
-                flowbox { padding: 0px; background: transparent; }
-                flowboxchild { padding: 0px; margin: 0px; border: none; min-width: 0px; outline: none; }
-                """
-        css_provider.load_from_data(css.encode())
-        Gtk.StyleContext.add_provider_for_display(Gdk.Display.get_default(), css_provider,
-                                                  Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
+        # flowbox/flowboxchild rules live in the shared stylesheet.
+        theme.ensure_static_css()
 
         self.setup_actions()
 
@@ -79,6 +81,19 @@ class MainWindow(Adw.ApplicationWindow):
             valign=Gtk.Align.START,
             selection_mode=Gtk.SelectionMode.NONE
         )
+        self.flowbox.set_homogeneous(False)
+        self.flowbox.set_max_children_per_line(1)
+        self.flowbox.set_min_children_per_line(1)
+        self.flowbox.set_halign(Gtk.Align.FILL)
+        self.flowbox.set_column_spacing(0)
+        self.flowbox.set_row_spacing(10)
+        self.flowbox.set_margin_top(5)
+        self.flowbox.set_margin_bottom(10)
+        self.flowbox.set_margin_start(10)
+        self.flowbox.set_margin_end(10)
+        # Same order as the SQL query: pinned first, then newest first.
+        self.flowbox.set_sort_func(self._sort_cards)
+        self.flowbox.set_filter_func(self._filter_card)
 
         scrolled = Gtk.ScrolledWindow(child=self.flowbox, vexpand=True)
         scrolled.set_has_frame(False)
@@ -135,52 +150,69 @@ class MainWindow(Adw.ApplicationWindow):
         self.stack.set_visible_child_name("trash")
 
     def go_back_to_main(self):
-        """Switches back to the main notes list view and refreshes it."""
-        self.refresh_list()
+        """Switches back to the main notes list view."""
+        # Only the trash view can change the set of visible notes (restore).
+        if self.stack.get_visible_child_name() == "trash":
+            self.refresh_list()
         self.stack.set_visible_child_name("main")
 
     def refresh_list(self):
-        """Refreshes the list of notes displayed in the flowbox."""
+        """Rebuilds the whole list of notes from the database."""
         while child := self.flowbox.get_first_child():
             self.flowbox.remove(child)
+        self.cards.clear()
 
-        self.flowbox.set_homogeneous(False)
-        self.flowbox.set_max_children_per_line(1)
-        self.flowbox.set_min_children_per_line(1)
+        for note in self.db.all_notes(full=True):
+            self._add_card(note)
 
-        self.flowbox.set_halign(Gtk.Align.FILL)
-        self.flowbox.set_valign(Gtk.Align.START)
+    def _add_card(self, note):
+        """Creates a NoteCard for a database row and inserts it into the list."""
+        card = NoteCard(note, self.db, refresh_callback=self.flowbox.invalidate_sort)
+        self.flowbox.append(card)
+        self.cards[card.note_id] = card
 
-        self.flowbox.set_column_spacing(0)
-        self.flowbox.set_row_spacing(10)
+        flow_child = card.get_parent()
+        if flow_child:
+            flow_child.set_margin_top(0)
+            flow_child.set_margin_bottom(0)
+            flow_child.set_margin_start(0)
+            flow_child.set_margin_end(0)
+            flow_child.set_can_focus(False)
+            flow_child.set_hexpand(True)
+            flow_child.set_halign(Gtk.Align.FILL)
+        return card
 
-        self.flowbox.set_margin_top(5)
-        self.flowbox.set_margin_bottom(10)
-        self.flowbox.set_margin_start(10)
-        self.flowbox.set_margin_end(10)
+    def _remove_card(self, note_id: int):
+        """Removes a single card from the list, if present."""
+        card = self.cards.pop(note_id, None)
+        if card and card.get_parent():
+            self.flowbox.remove(card.get_parent())
 
-        notes = self.db.all_notes(full=True)
-        for note in notes:
-            card = NoteCard(note, self.db, refresh_callback=self.refresh_list)
-            self.flowbox.append(card)
+    @staticmethod
+    def _sort_cards(child_a, child_b) -> int:
+        """Pinned notes first, then newer notes (higher id) first."""
+        a, b = child_a.get_child(), child_b.get_child()
+        if a.is_pinned != b.is_pinned:
+            return -1 if a.is_pinned else 1
+        return (b.note_id > a.note_id) - (b.note_id < a.note_id)
 
-            flow_child = card.get_parent()
-            if flow_child:
-                flow_child.set_margin_top(0);
-                flow_child.set_margin_bottom(0)
-                flow_child.set_margin_start(0);
-                flow_child.set_margin_end(0)
-                flow_child.set_can_focus(False)
-
-                flow_child.set_hexpand(True)
-                flow_child.set_halign(Gtk.Align.FILL)
+    def _filter_card(self, child) -> bool:
+        if not self._search_query:
+            return True
+        return self._search_query in child.get_child().get_search_text()
 
     def create_note(self):
         """Creates a new sticky note and opens it."""
         palette = self.config.get("palette", [])
         default_color = palette[0] if palette else "#FFF59D"
-        note_id = self.db.add(color=default_color)
-        self.refresh_list()
+        # Markdown applies only to notes created while it is enabled; existing
+        # (rich text) notes are never converted.
+        md_config = self.config.get("markdown")
+        use_markdown = isinstance(md_config, dict) and bool(md_config.get("enabled", False))
+        note_id = self.db.add(color=default_color, is_markdown=use_markdown)
+        note = self.db.get(note_id)
+        if note:
+            self._add_card(note)
         self.open_note(note_id)
 
     def open_note(self, note_id: int):
@@ -199,6 +231,7 @@ class MainWindow(Adw.ApplicationWindow):
 
         new_sticky = StickyWindow(self.db, note_id, self)
         self.stickies[note_id] = new_sticky
+        self.db.set_open_state(note_id, 1)
         new_sticky.present()
 
     def on_sticky_closed(self, note_id: int):
@@ -210,6 +243,8 @@ class MainWindow(Adw.ApplicationWindow):
         """
         if note_id in self.stickies:
             del self.stickies[note_id]
+        if not self.is_quitting:
+            self.db.set_open_state(note_id, 0)
 
     def on_search(self, entry: Gtk.SearchEntry):
         """
@@ -217,16 +252,8 @@ class MainWindow(Adw.ApplicationWindow):
         Args:
             entry (Gtk.SearchEntry): The search entry widget.
         """
-        query = entry.get_text().lower()
-        child = self.flowbox.get_first_child()
-        while child:
-            card = child.get_child()
-            lbl = card.label
-            if query in lbl.get_text().lower():
-                child.set_visible(True)
-            else:
-                child.set_visible(False)
-            child = child.get_next_sibling()
+        self._search_query = entry.get_text().lower()
+        self.flowbox.invalidate_filter()
 
     def update_card_text(self, note_id: int, serialized_content: list[dict]):
         """
@@ -235,14 +262,11 @@ class MainWindow(Adw.ApplicationWindow):
             note_id (int): The ID of the note card to update.
             serialized_content (list[dict]): The new serialized content for the note.
         """
-        child = self.flowbox.get_first_child()
-        while child:
-            card = child.get_child()
-            if isinstance(card, NoteCard) and card.note_id == note_id:
-                new_markup = card._generate_markup(serialized_content)
-                card.label.set_markup(new_markup)
-                break
-            child = child.get_next_sibling()
+        card = self.cards.get(note_id)
+        if card:
+            card.set_segments(serialized_content)
+            if self._search_query:
+                self.flowbox.invalidate_filter()
 
     def update_card_color_live(self, note_id: int, color: str):
         """
@@ -251,13 +275,9 @@ class MainWindow(Adw.ApplicationWindow):
             note_id (int): The ID of the note card to update.
             color (str): The new color for the card.
         """
-        child = self.flowbox.get_first_child()
-        while child:
-            card = child.get_child()
-            if isinstance(card, NoteCard) and card.note_id == note_id:
-                card.update_color(color)
-                break
-            child = child.get_next_sibling()
+        card = self.cards.get(note_id)
+        if card:
+            card.update_color(color)
 
     def on_action_delete_manual(self, note_id: int):
         """
@@ -267,7 +287,7 @@ class MainWindow(Adw.ApplicationWindow):
         """
         self.db.move_to_trash(note_id)
         if note_id in self.stickies: self.stickies[note_id].close()
-        self.refresh_list()
+        self._remove_card(note_id)
 
     def setup_actions(self):
         """Sets up application-wide actions."""
@@ -297,10 +317,7 @@ class MainWindow(Adw.ApplicationWindow):
         for i, color in enumerate(palette):
             b = Gtk.Button()
             b.set_size_request(28, 28)
-            cp = Gtk.CssProvider()
-            cp.load_from_data(
-                f"button {{ background-color: {color}; border-radius: 14px; min-width: 28px; min-height: 28px; padding: 0; }}".encode())
-            b.get_style_context().add_provider(cp, Gtk.STYLE_PROVIDER_PRIORITY_USER)
+            theme.apply_swatch(b, color, "menu")
             b.connect("clicked", lambda _, c=color: self.update_note_color(note_id, c, target_widget, popover))
             grid.attach(b, i % 4, i // 4, 1, 1)
 
@@ -325,6 +342,6 @@ class MainWindow(Adw.ApplicationWindow):
             popover (Gtk.Popover): The popover containing the color selection.
         """
         self.db.update_color(note_id, color)
-        self.refresh_list()
+        self.update_card_color_live(note_id, color)
         if note_id in self.stickies: self.stickies[note_id].apply_color(color)
         popover.popdown()

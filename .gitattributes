@@ -1,0 +1,7 @@
+# Linux project: keep LF line endings in every checkout (also on Windows),
+# so scripts and .desktop files work when built from a shared folder.
+* text=auto eol=lf
+*.png binary
+*.mo binary
+*.snap binary
+*.deb binary
