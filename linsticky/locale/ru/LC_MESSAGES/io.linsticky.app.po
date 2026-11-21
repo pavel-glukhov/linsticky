@@ -73,27 +73,23 @@ msgstr "Параметры панели инструментов"
 
 # linsticky/views/settings_view.py:144
 # /linsticky/sticky/customization_dialog.py:46
-#, fuzzy
 msgid "Bold"
-msgstr "Жирный (B)"
+msgstr "Жирный"
 
 # linsticky/views/settings_view.py:144
 # /linsticky/sticky/customization_dialog.py:47
-#, fuzzy
 msgid "Italic"
-msgstr "Курсив (I)"
+msgstr "Курсив"
 
 # linsticky/views/settings_view.py:145
 # /linsticky/sticky/customization_dialog.py:48
-#, fuzzy
 msgid "Underline"
-msgstr "Подчёркивание (U)"
+msgstr "Подчёркивание"
 
 # linsticky/views/settings_view.py:145
 # /linsticky/sticky/customization_dialog.py:49
-#, fuzzy
 msgid "Strikethrough"
-msgstr "Зачёркивание (S)"
+msgstr "Зачёркивание"
 
 # linsticky/views/settings_view.py:146
 # /linsticky/sticky/customization_dialog.py:50
@@ -351,3 +347,43 @@ msgstr "Подчёркивание, цвет текста и размер шри
 # linsticky/sticky/sticky_markdown.py
 msgid "Convert"
 msgstr "Преобразовать"
+
+# linsticky/content/markdown_edit.py
+msgid "Heading"
+msgstr "Заголовок"
+
+# linsticky/content/markdown_edit.py
+msgid "Inline code"
+msgstr "Код в строке"
+
+# linsticky/content/markdown_edit.py
+msgid "Link"
+msgstr "Ссылка"
+
+# linsticky/content/markdown_edit.py
+msgid "Numbered list"
+msgstr "Нумерованный список"
+
+# linsticky/content/markdown_edit.py
+msgid "Task list"
+msgstr "Список задач"
+
+# linsticky/content/markdown_edit.py
+msgid "Quote"
+msgstr "Цитата"
+
+# linsticky/content/markdown_edit.py
+msgid "Code block"
+msgstr "Блок кода"
+
+# linsticky/content/markdown_edit.py
+msgid "Horizontal rule"
+msgstr "Горизонтальная линия"
+
+# linsticky/sticky/customization_dialog.py
+msgid "Markdown Toolbar"
+msgstr "Панель Markdown"
+
+# linsticky/views/settings_view.py
+msgid "Allow Markdown notes and choose their toolbar buttons"
+msgstr "Разрешить Markdown-заметки и выбрать кнопки их панели"

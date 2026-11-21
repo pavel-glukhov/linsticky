@@ -71,27 +71,23 @@ msgstr "Құралдар тақтасының параметрлері"
 
 # linsticky/views/settings_view.py:144
 # /linsticky/sticky/customization_dialog.py:46
-#, fuzzy
 msgid "Bold"
-msgstr "Қалың (B)"
+msgstr "Қалың"
 
 # linsticky/views/settings_view.py:144
 # /linsticky/sticky/customization_dialog.py:47
-#, fuzzy
 msgid "Italic"
-msgstr "Көлбеу (I)"
+msgstr "Көлбеу"
 
 # linsticky/views/settings_view.py:145
 # /linsticky/sticky/customization_dialog.py:48
-#, fuzzy
 msgid "Underline"
-msgstr "Асты сызылған (U)"
+msgstr "Асты сызылған"
 
 # linsticky/views/settings_view.py:145
 # /linsticky/sticky/customization_dialog.py:49
-#, fuzzy
 msgid "Strikethrough"
-msgstr "Сызылған (S)"
+msgstr "Сызылған"
 
 # linsticky/views/settings_view.py:146
 # /linsticky/sticky/customization_dialog.py:50
@@ -349,3 +345,43 @@ msgstr "Асты сызу, мәтін түстері мен қаріп өлше�
 # linsticky/sticky/sticky_markdown.py
 msgid "Convert"
 msgstr "Түрлендіру"
+
+# linsticky/content/markdown_edit.py
+msgid "Heading"
+msgstr "Тақырып"
+
+# linsticky/content/markdown_edit.py
+msgid "Inline code"
+msgstr "Жолдағы код"
+
+# linsticky/content/markdown_edit.py
+msgid "Link"
+msgstr "Сілтеме"
+
+# linsticky/content/markdown_edit.py
+msgid "Numbered list"
+msgstr "Нөмірленген тізім"
+
+# linsticky/content/markdown_edit.py
+msgid "Task list"
+msgstr "Тапсырмалар тізімі"
+
+# linsticky/content/markdown_edit.py
+msgid "Quote"
+msgstr "Дәйексөз"
+
+# linsticky/content/markdown_edit.py
+msgid "Code block"
+msgstr "Код блогы"
+
+# linsticky/content/markdown_edit.py
+msgid "Horizontal rule"
+msgstr "Көлденең сызық"
+
+# linsticky/sticky/customization_dialog.py
+msgid "Markdown Toolbar"
+msgstr "Markdown құралдар тақтасы"
+
+# linsticky/views/settings_view.py
+msgid "Allow Markdown notes and choose their toolbar buttons"
+msgstr "Markdown жазбаларына рұқсат беру және тақта батырмаларын таңдау"

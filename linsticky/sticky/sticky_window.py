@@ -13,7 +13,7 @@ from .sticky_formatting import StickyFormatting
 from .sticky_actions import StickyActions
 from .sticky_ui import StickyUI
 from .sticky_events import StickyEvents
-from .sticky_markdown import StickyMarkdown
+from .sticky_markdown import StickyMarkdown, markdown_settings
 
 
 class StickyWindow(Adw.Window, StickyFormatting, StickyActions, StickyUI, StickyEvents, StickyMarkdown):
@@ -92,6 +92,8 @@ class StickyWindow(Adw.Window, StickyFormatting, StickyActions, StickyUI, Sticky
             # Markdown notes open in the rendered preview when they have content.
             self.md_preview_active = bool(self._get_buffer_text().strip())
             self.sync_markdown_ui()
+        elif not markdown_settings(self.config)[0]:
+            self.sync_markdown_ui()  # hides the Markdown menu item
 
         # --- Event and Persistence Controllers ---
         focus_ctrl = Gtk.EventControllerFocus()
@@ -144,6 +146,10 @@ class StickyWindow(Adw.Window, StickyFormatting, StickyActions, StickyUI, Sticky
 
         scale = self.scale
         icon_size = int(18 * scale)
+        if self.is_markdown:
+            # Same bar, but with Markdown buttons that insert markup.
+            self.build_markdown_toolbar(icon_size)
+            return
         fmt_config = self.config.get("formatting", {})
         if not isinstance(fmt_config, dict): fmt_config = {}
 
@@ -154,9 +160,6 @@ class StickyWindow(Adw.Window, StickyFormatting, StickyActions, StickyUI, Sticky
             ("strikethrough", "<s>S</s>", self.apply_format, "strikethrough"),
             ("list", "≡", self.toggle_bullet_list, None)
         ]
-        if self.is_markdown:
-            # Markdown has no underline, text colors or font sizes.
-            buttons_config = [b for b in buttons_config if b[0] != "underline"]
 
         has_any_btn = False
         for key, label, callback, arg in buttons_config:
@@ -172,8 +175,8 @@ class StickyWindow(Adw.Window, StickyFormatting, StickyActions, StickyUI, Sticky
                 self.format_bar.append(btn)
                 has_any_btn = True
 
-        show_color = fmt_config.get("text_color", True) and not self.is_markdown
-        show_font = fmt_config.get("font_size", True) and not self.is_markdown
+        show_color = fmt_config.get("text_color", True)
+        show_font = fmt_config.get("font_size", True)
 
         if has_any_btn and (show_color or show_font):
             sep = Gtk.Separator(orientation=Gtk.Orientation.VERTICAL, margin_start=int(3*scale), margin_end=int(3*scale))

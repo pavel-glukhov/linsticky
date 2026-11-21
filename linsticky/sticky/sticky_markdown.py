@@ -5,19 +5,29 @@ A note in Markdown mode keeps its raw Markdown source as untagged text in the
 regular text buffer (so saving, the database format and older app versions are
 unaffected). The note can be shown either as editable source or as a rendered,
 read-only preview. Formatting buttons and shortcuts insert Markdown markers
-instead of applying text tags.
+instead of applying text tags; the bottom toolbar shows the Markdown buttons
+chosen in the settings.
 """
 import builtins
 
 from gi.repository import Gtk, Gdk, Adw, GLib, Pango
 
 from content import markdown as md
+from content import markdown_edit as md_edit
 
 if not hasattr(builtins, "_"):
     builtins._ = lambda s: s
 
-MD_MARKERS = {"bold": "**", "italic": "*", "strikethrough": "~~"}
-MD_LIST_PREFIX = "- "
+
+def markdown_settings(config: dict) -> tuple[bool, dict]:
+    """Returns (mode enabled, {button key: visible}) from the app config."""
+    section = config.get("markdown") if isinstance(config, dict) else None
+    if not isinstance(section, dict):
+        section = {}
+    buttons = dict(md_edit.MD_TOOLBAR_DEFAULTS)
+    if isinstance(section.get("buttons"), dict):
+        buttons.update({k: bool(v) for k, v in section["buttons"].items() if k in buttons})
+    return bool(section.get("enabled", True)), buttons
 
 
 class StickyMarkdown:
@@ -79,6 +89,10 @@ class StickyMarkdown:
             self._md_syncing = True
             self.chk_markdown.set_active(self.is_markdown)
             self._md_syncing = False
+            # When Markdown is turned off in the settings, the item stays only
+            # on notes that are already Markdown, so they can be switched back.
+            enabled, _buttons = markdown_settings(self.config)
+            self.chk_markdown.set_visible(enabled or self.is_markdown)
         if getattr(self, "btn_md_toggle", None) is not None:
             self.btn_md_toggle.set_visible(self.is_markdown)
         if not self.is_markdown:
@@ -99,8 +113,6 @@ class StickyMarkdown:
             self.content_stack.set_visible_child_name("preview")
         else:
             self.content_stack.set_visible_child_name("edit")
-        if hasattr(self, "format_bar"):
-            self.format_bar.set_visible(not self.md_preview_active)
         if getattr(self, "btn_md_toggle", None) is not None:
             if self.md_preview_active:
                 self.btn_md_toggle.set_icon_name("document-edit-symbolic")
@@ -192,68 +204,48 @@ class StickyMarkdown:
         start, end = self.buffer.get_bounds()
         return self.buffer.get_text(start, end, True)
 
-    def md_wrap_selection(self, tag_name: str):
-        """
-        Toggles Markdown markers (e.g. ``**``) around the selection.
-        Without a selection, inserts an empty marker pair at the cursor.
-        """
-        marker = MD_MARKERS.get(tag_name)
-        if not marker:
-            return
+    def build_markdown_toolbar(self, icon_size: int):
+        """Fills ``self.format_bar`` with the Markdown buttons enabled in the settings."""
+        _enabled, visible = markdown_settings(self.config)
+        for button in md_edit.MD_TOOLBAR:
+            if not visible.get(button.key, button.default):
+                continue
+            btn = Gtk.Button(has_frame=False)
+            if button.icon:
+                btn.set_child(Gtk.Image.new_from_icon_name(button.icon))
+            else:
+                btn.set_child(Gtk.Label(label=button.label, use_markup=True))
+            btn.set_tooltip_text(builtins._(button.tooltip))
+            btn.add_css_class("format-btn-tiny")
+            btn.set_size_request(icon_size, icon_size)
+            btn.connect("clicked", (lambda key: lambda _b: self.md_toolbar_action(key))(button.key))
+            self.format_bar.append(btn)
+
+    def md_toolbar_action(self, action: str):
+        """Applies a Markdown toolbar action to the selection (switching to source first)."""
+        if self.md_preview_active:
+            self.set_markdown_preview(False)
         buf = self.buffer
-        size = len(marker)
         bounds = buf.get_selection_bounds()
+        if bounds:
+            sel_start, sel_end = bounds[0].get_offset(), bounds[1].get_offset()
+        else:
+            sel_start = sel_end = buf.get_iter_at_mark(buf.get_insert()).get_offset()
+
+        edit = md_edit.apply(action, self._get_buffer_text(), sel_start, sel_end)
+        if edit is None:
+            return
 
         buf.begin_user_action()
-        if not bounds:
-            cursor = buf.get_iter_at_mark(buf.get_insert())
-            buf.insert(cursor, marker + marker)
-            cursor = buf.get_iter_at_mark(buf.get_insert())
-            cursor.backward_chars(size)
-            buf.place_cursor(cursor)
-            buf.end_user_action()
-            self.text_view.grab_focus()
-            return
-
-        start, end = bounds
-        start_mark = buf.create_mark(None, start, True)
-        end_mark = buf.create_mark(None, end, False)
-        selected = buf.get_text(start, end, True)
-
-        before, after = start.copy(), end.copy()
-        before.backward_chars(size)
-        after.forward_chars(size)
-        outer_before = buf.get_text(before, start, True)
-        outer_after = buf.get_text(end, after, True)
-
-        if len(selected) >= 2 * size and selected.startswith(marker) and selected.endswith(marker):
-            # Selection includes the markers: remove them.
-            s = buf.get_iter_at_mark(start_mark)
-            s_end = s.copy(); s_end.forward_chars(size)
-            buf.delete(s, s_end)
-            e = buf.get_iter_at_mark(end_mark)
-            e_start = e.copy(); e_start.backward_chars(size)
-            buf.delete(e_start, e)
-        elif outer_before == marker and outer_after == marker:
-            # Markers right around the selection: remove them.
-            e = buf.get_iter_at_mark(end_mark)
-            e_end = e.copy(); e_end.forward_chars(size)
-            buf.delete(e, e_end)
-            s = buf.get_iter_at_mark(start_mark)
-            s_start = s.copy(); s_start.backward_chars(size)
-            buf.delete(s_start, s)
-        else:
-            buf.insert(buf.get_iter_at_mark(end_mark), marker)
-            buf.insert(buf.get_iter_at_mark(start_mark), marker)
-            s = buf.get_iter_at_mark(start_mark)
-            s.forward_chars(size)
-            buf.move_mark(start_mark, s)
-            e = buf.get_iter_at_mark(end_mark)
-            e.backward_chars(size)
-            buf.move_mark(end_mark, e)
-
-        buf.select_range(buf.get_iter_at_mark(start_mark), buf.get_iter_at_mark(end_mark))
-        buf.delete_mark(start_mark)
-        buf.delete_mark(end_mark)
+        start = buf.get_iter_at_offset(edit.start)
+        end = buf.get_iter_at_offset(edit.end)
+        buf.delete(start, end)
+        buf.insert(buf.get_iter_at_offset(edit.start), edit.text)
+        buf.select_range(buf.get_iter_at_offset(edit.sel_start), buf.get_iter_at_offset(edit.sel_end))
         buf.end_user_action()
         self.text_view.grab_focus()
+
+    def md_wrap_selection(self, tag_name: str):
+        """Keyboard shortcuts (Ctrl+B/I/S...) in Markdown mode."""
+        if tag_name in md_edit.WRAP_MARKERS:
+            self.md_toolbar_action(tag_name)

@@ -72,27 +72,23 @@ msgstr "Araç Çubuğu Seçenekleri"
 
 # linsticky/views/settings_view.py:144
 # /linsticky/sticky/customization_dialog.py:46
-#, fuzzy
 msgid "Bold"
-msgstr "Kalın (B)"
+msgstr "Kalın"
 
 # linsticky/views/settings_view.py:144
 # /linsticky/sticky/customization_dialog.py:47
-#, fuzzy
 msgid "Italic"
-msgstr "İtalik (I)"
+msgstr "İtalik"
 
 # linsticky/views/settings_view.py:145
 # /linsticky/sticky/customization_dialog.py:48
-#, fuzzy
 msgid "Underline"
-msgstr "Altı Çizili (U)"
+msgstr "Altı Çizili"
 
 # linsticky/views/settings_view.py:145
 # /linsticky/sticky/customization_dialog.py:49
-#, fuzzy
 msgid "Strikethrough"
-msgstr "Üstü Çizili (S)"
+msgstr "Üstü Çizili"
 
 # linsticky/views/settings_view.py:146
 # /linsticky/sticky/customization_dialog.py:50
@@ -351,3 +347,43 @@ msgstr "Altı çizili metin, metin renkleri ve yazı tipi boyutlarının Markdow
 # linsticky/sticky/sticky_markdown.py
 msgid "Convert"
 msgstr "Dönüştür"
+
+# linsticky/content/markdown_edit.py
+msgid "Heading"
+msgstr "Başlık"
+
+# linsticky/content/markdown_edit.py
+msgid "Inline code"
+msgstr "Satır içi kod"
+
+# linsticky/content/markdown_edit.py
+msgid "Link"
+msgstr "Bağlantı"
+
+# linsticky/content/markdown_edit.py
+msgid "Numbered list"
+msgstr "Numaralı liste"
+
+# linsticky/content/markdown_edit.py
+msgid "Task list"
+msgstr "Görev listesi"
+
+# linsticky/content/markdown_edit.py
+msgid "Quote"
+msgstr "Alıntı"
+
+# linsticky/content/markdown_edit.py
+msgid "Code block"
+msgstr "Kod bloğu"
+
+# linsticky/content/markdown_edit.py
+msgid "Horizontal rule"
+msgstr "Yatay çizgi"
+
+# linsticky/sticky/customization_dialog.py
+msgid "Markdown Toolbar"
+msgstr "Markdown araç çubuğu"
+
+# linsticky/views/settings_view.py
+msgid "Allow Markdown notes and choose their toolbar buttons"
+msgstr "Markdown notlarına izin ver ve araç çubuğu düğmelerini seç"

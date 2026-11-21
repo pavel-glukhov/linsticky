@@ -9,6 +9,8 @@ Snap packages.
 import os
 import json
 
+from content.markdown_edit import MD_TOOLBAR_DEFAULTS
+
 # --- Configuration Path Setup ---
 # Compatibility Note:
 # This logic determines where the `config.json` file is stored.
@@ -66,7 +68,13 @@ class ConfigManager:
             "formatting": {
                 "bold": True, "italic": True, "underline": True,
                 "strikethrough": True, "list": True, "text_color": True,
-                "font_size": True, "markdown": True
+                "font_size": True
+            },
+            # Markdown notes: whether the mode can be turned on, and which
+            # buttons the sticker toolbar shows for Markdown notes.
+            "markdown": {
+                "enabled": True,
+                "buttons": dict(MD_TOOLBAR_DEFAULTS),
             }
         }
 
@@ -105,10 +113,33 @@ class ConfigManager:
             if not isinstance(config.get("formatting"), dict):
                 config["formatting"] = defaults["formatting"]
 
+            config["markdown"] = cls._merge_markdown(defaults["markdown"], loaded_config)
+            config["formatting"].pop("markdown", None)
+
             return config
         except (json.JSONDecodeError, OSError) as e:
             print(f"WARNING: Error loading '{CONF_PATH}'. Resetting to defaults. Error: {e}")
             return defaults
+
+    @staticmethod
+    def _merge_markdown(default: dict, loaded_config: dict) -> dict:
+        """
+        Returns the Markdown settings with defaults for missing keys.
+        Older versions stored only an on/off flag as ``formatting.markdown``.
+        """
+        result = {"enabled": default["enabled"], "buttons": dict(default["buttons"])}
+        loaded = loaded_config.get("markdown")
+        if isinstance(loaded, dict):
+            if isinstance(loaded.get("enabled"), bool):
+                result["enabled"] = loaded["enabled"]
+            if isinstance(loaded.get("buttons"), dict):
+                result["buttons"].update(
+                    {k: bool(v) for k, v in loaded["buttons"].items() if k in result["buttons"]})
+        else:
+            old_fmt = loaded_config.get("formatting")
+            if isinstance(old_fmt, dict) and "markdown" in old_fmt:
+                result["enabled"] = bool(old_fmt["markdown"])
+        return result
 
     @staticmethod
     def save(config_dict: dict):

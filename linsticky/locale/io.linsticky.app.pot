@@ -286,3 +286,43 @@ msgstr ""
 # linsticky/sticky/sticky_markdown.py
 msgid "Convert"
 msgstr ""
+
+# linsticky/content/markdown_edit.py
+msgid "Heading"
+msgstr ""
+
+# linsticky/content/markdown_edit.py
+msgid "Inline code"
+msgstr ""
+
+# linsticky/content/markdown_edit.py
+msgid "Link"
+msgstr ""
+
+# linsticky/content/markdown_edit.py
+msgid "Numbered list"
+msgstr ""
+
+# linsticky/content/markdown_edit.py
+msgid "Task list"
+msgstr ""
+
+# linsticky/content/markdown_edit.py
+msgid "Quote"
+msgstr ""
+
+# linsticky/content/markdown_edit.py
+msgid "Code block"
+msgstr ""
+
+# linsticky/content/markdown_edit.py
+msgid "Horizontal rule"
+msgstr ""
+
+# linsticky/sticky/customization_dialog.py
+msgid "Markdown Toolbar"
+msgstr ""
+
+# linsticky/views/settings_view.py
+msgid "Allow Markdown notes and choose their toolbar buttons"
+msgstr ""

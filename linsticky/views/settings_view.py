@@ -3,6 +3,7 @@ from gi.repository import Gtk, Adw, Gio, Gdk
 from config.config_manager import ConfigManager
 from config.config import get_supported_languages
 import theme
+from content.markdown_edit import MD_TOOLBAR
 
 _ = builtins._
 
@@ -151,7 +152,6 @@ class SettingsView(Gtk.Box):
             ("underline", _("Underline (U)")), ("strikethrough", _("Strikethrough (S)")),
             ("list", _("Bullet List")),
             ("text_color", _("Text Color")), ("font_size", _("Font Size")),
-            ("markdown", _("Markdown mode")),
         ]
         current_fmt = self.config["formatting"]
         for key, name in buttons_to_toggle:
@@ -163,6 +163,27 @@ class SettingsView(Gtk.Box):
             fmt_expander.add_row(row)
             self.switches[key] = switch
         list_box.append(fmt_expander)
+
+        # --- Markdown Settings ---
+        # The expander's switch turns the Markdown mode on/off; its rows choose
+        # which Markdown buttons the sticker toolbar shows.
+        md_config = self.config.get("markdown", {})
+        self.md_expander = Adw.ExpanderRow(
+            title=_("Markdown mode"),
+            subtitle=_("Allow Markdown notes and choose their toolbar buttons"),
+            show_enable_switch=True,
+        )
+        self.md_expander.set_enable_expansion(md_config.get("enabled", True))
+        self.md_switches = {}
+        for button in MD_TOOLBAR:
+            row = Adw.ActionRow(title=_(button.tooltip))
+            check = Gtk.CheckButton(valign=Gtk.Align.CENTER)
+            check.set_active(md_config.get("buttons", {}).get(button.key, button.default))
+            row.add_suffix(check)
+            row.set_activatable_widget(check)
+            self.md_expander.add_row(row)
+            self.md_switches[button.key] = check
+        list_box.append(self.md_expander)
 
         footer = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, margin_top=20, margin_bottom=20, margin_start=20, margin_end=20)
         btn_save = Gtk.Button(label=_("Save Settings"), css_classes=["suggested-action"])
@@ -183,6 +204,12 @@ class SettingsView(Gtk.Box):
         current_fmt = self.config.get("formatting", {})
         for key, switch in self.switches.items():
             switch.set_active(current_fmt.get(key, True))
+
+        md_config = self.config.get("markdown", {})
+        self.md_expander.set_enable_expansion(md_config.get("enabled", True))
+        for button in MD_TOOLBAR:
+            self.md_switches[button.key].set_active(
+                md_config.get("buttons", {}).get(button.key, button.default))
             
         # Update palette buttons if needed (simplified check)
         current_palette = self.config.get("palette", [])
@@ -323,6 +350,10 @@ class SettingsView(Gtk.Box):
             
         fmt_settings = {key: switch.get_active() for key, switch in self.switches.items()}
         self.config["formatting"] = fmt_settings
+        self.config["markdown"] = {
+            "enabled": self.md_expander.get_enable_expansion(),
+            "buttons": {key: check.get_active() for key, check in self.md_switches.items()},
+        }
 
         ConfigManager.save(self.config)
 

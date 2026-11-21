@@ -73,27 +73,23 @@ msgstr "Toolbar Options"
 
 # linsticky/views/settings_view.py:144
 # /linsticky/sticky/customization_dialog.py:46
-#, fuzzy
 msgid "Bold"
-msgstr "Bold (B)"
+msgstr "Bold"
 
 # linsticky/views/settings_view.py:144
 # /linsticky/sticky/customization_dialog.py:47
-#, fuzzy
 msgid "Italic"
-msgstr "Italic (I)"
+msgstr "Italic"
 
 # linsticky/views/settings_view.py:145
 # /linsticky/sticky/customization_dialog.py:48
-#, fuzzy
 msgid "Underline"
-msgstr "Underline (U)"
+msgstr "Underline"
 
 # linsticky/views/settings_view.py:145
 # /linsticky/sticky/customization_dialog.py:49
-#, fuzzy
 msgid "Strikethrough"
-msgstr "Strikethrough (S)"
+msgstr "Strikethrough"
 
 # linsticky/views/settings_view.py:146
 # /linsticky/sticky/customization_dialog.py:50
@@ -348,3 +344,43 @@ msgstr "Underline, text colors and font sizes have no Markdown equivalent and wi
 # linsticky/sticky/sticky_markdown.py
 msgid "Convert"
 msgstr "Convert"
+
+# linsticky/content/markdown_edit.py
+msgid "Heading"
+msgstr "Heading"
+
+# linsticky/content/markdown_edit.py
+msgid "Inline code"
+msgstr "Inline code"
+
+# linsticky/content/markdown_edit.py
+msgid "Link"
+msgstr "Link"
+
+# linsticky/content/markdown_edit.py
+msgid "Numbered list"
+msgstr "Numbered list"
+
+# linsticky/content/markdown_edit.py
+msgid "Task list"
+msgstr "Task list"
+
+# linsticky/content/markdown_edit.py
+msgid "Quote"
+msgstr "Quote"
+
+# linsticky/content/markdown_edit.py
+msgid "Code block"
+msgstr "Code block"
+
+# linsticky/content/markdown_edit.py
+msgid "Horizontal rule"
+msgstr "Horizontal rule"
+
+# linsticky/sticky/customization_dialog.py
+msgid "Markdown Toolbar"
+msgstr "Markdown Toolbar"
+
+# linsticky/views/settings_view.py
+msgid "Allow Markdown notes and choose their toolbar buttons"
+msgstr "Allow Markdown notes and choose their toolbar buttons"

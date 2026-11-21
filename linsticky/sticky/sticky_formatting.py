@@ -121,8 +121,10 @@ class StickyFormatting:
         If a line starts with a bullet, it's removed. Otherwise, a bullet is added.
         This operation is performed on all lines within the selection.
         """
-        # Markdown notes use a Markdown list marker instead of the bullet glyph.
-        BULLET_CHAR = "- " if getattr(self, "is_markdown", False) else " • "
+        if getattr(self, "is_markdown", False):
+            self.md_toolbar_action("list")
+            return
+        BULLET_CHAR = " • "
         res = self.buffer.get_selection_bounds()
 
         start, end = res if res else (

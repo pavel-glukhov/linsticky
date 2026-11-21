@@ -286,3 +286,43 @@ msgstr "下划线、文字颜色和字号在 Markdown 中没有对应格式，�
 # linsticky/sticky/sticky_markdown.py
 msgid "Convert"
 msgstr "转换"
+
+# linsticky/content/markdown_edit.py
+msgid "Heading"
+msgstr "标题"
+
+# linsticky/content/markdown_edit.py
+msgid "Inline code"
+msgstr "行内代码"
+
+# linsticky/content/markdown_edit.py
+msgid "Link"
+msgstr "链接"
+
+# linsticky/content/markdown_edit.py
+msgid "Numbered list"
+msgstr "编号列表"
+
+# linsticky/content/markdown_edit.py
+msgid "Task list"
+msgstr "任务列表"
+
+# linsticky/content/markdown_edit.py
+msgid "Quote"
+msgstr "引用"
+
+# linsticky/content/markdown_edit.py
+msgid "Code block"
+msgstr "代码块"
+
+# linsticky/content/markdown_edit.py
+msgid "Horizontal rule"
+msgstr "水平线"
+
+# linsticky/sticky/customization_dialog.py
+msgid "Markdown Toolbar"
+msgstr "Markdown 工具栏"
+
+# linsticky/views/settings_view.py
+msgid "Allow Markdown notes and choose their toolbar buttons"
+msgstr "允许 Markdown 便笺并选择其工具栏按钮"
