@@ -16,12 +16,12 @@ class StickyEvents:
     A mixin for `StickyWindow` that handles UI events, gestures, and signals.
     """
 
-    def _on_add_clicked(self, button: Gtk.Button):
+    def _on_add_note_chosen(self, markdown: bool):
         """
-        Handles the 'add new note' button click by delegating to the main window.
+        Creates a new note of the chosen type (from the "+" menu) via the main window.
         """
         if self.main_window:
-            self.main_window.create_note()
+            self.main_window.create_note(markdown)
         # Re-apply design to the current window as a safeguard against any
         # potential style context changes triggered by creating a new window.
         self._update_ui_design()

@@ -1,9 +1,9 @@
 """
 Markdown mode for StickyWindow ("source / preview").
 
-The mode is fixed when a note is created: new notes use Markdown while it is
-enabled in the settings; notes created as rich text (including all notes from
-earlier versions) are never converted.
+The type is chosen when a note is created ("+" -> Text Note / Markdown Note)
+and never changes: text notes (including all notes from earlier versions) are
+never converted.
 
 A note in Markdown mode keeps its raw Markdown source as untagged text in the
 regular text buffer (so saving, the database format and older app versions are
@@ -23,15 +23,15 @@ if not hasattr(builtins, "_"):
     builtins._ = lambda s: s
 
 
-def markdown_settings(config: dict) -> tuple[bool, dict]:
-    """Returns (mode enabled, {button key: visible}) from the app config."""
+def markdown_buttons(config: dict) -> dict:
+    """Returns {button key: visible} for the Markdown toolbar from the app config."""
     section = config.get("markdown") if isinstance(config, dict) else None
     if not isinstance(section, dict):
         section = {}
     buttons = dict(md_edit.MD_TOOLBAR_DEFAULTS)
     if isinstance(section.get("buttons"), dict):
         buttons.update({k: bool(v) for k, v in section["buttons"].items() if k in buttons})
-    return bool(section.get("enabled", False)), buttons
+    return buttons
 
 
 class StickyMarkdown:
@@ -135,7 +135,7 @@ class StickyMarkdown:
 
     def build_markdown_toolbar(self, icon_size: int):
         """Fills ``self.format_bar`` with the Markdown buttons enabled in the settings."""
-        _enabled, visible = markdown_settings(self.config)
+        visible = markdown_buttons(self.config)
         for button in md_edit.MD_TOOLBAR:
             if not visible.get(button.key, button.default):
                 continue

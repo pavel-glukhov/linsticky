@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-21 08:25+0000\n"
+"POT-Creation-Date: 2026-11-21 09:53+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -197,10 +197,6 @@ msgstr ""
 msgid "Formatting Buttons"
 msgstr ""
 
-# /linsticky/views/settings_view.py:141
-msgid "Choose which buttons to show on stickers"
-msgstr ""
-
 # /linsticky/views/settings_view.py:144
 msgid "Bold (B)"
 msgstr ""
@@ -243,15 +239,6 @@ msgstr ""
 
 # /linsticky/views/settings_view.py:322
 msgid "Some changes require an application restart to take full effect."
-msgstr ""
-
-# /linsticky/views/settings_view.py:324
-msgid "OK"
-msgstr ""
-
-# linsticky/views/settings_view.py
-# linsticky/sticky/customization_dialog.py
-msgid "Markdown mode"
 msgstr ""
 
 # linsticky/sticky/sticky_markdown.py
@@ -298,14 +285,42 @@ msgstr ""
 msgid "Markdown Toolbar"
 msgstr ""
 
-# linsticky/views/settings_view.py
-msgid "New notes are created in Markdown; existing notes are not changed"
-msgstr ""
-
 # linsticky/views/settings_view.py:391
 msgid "Later"
 msgstr ""
 
 # linsticky/views/settings_view.py:392
 msgid "Restart Now"
+msgstr ""
+
+# linsticky/sticky/sticky_ui.py:50
+msgid "New note"
+msgstr ""
+
+# linsticky/views/main_view/main_view.py:61
+msgid "Choose the note type"
+msgstr ""
+
+# linsticky/views/main_view/main_view.py:237
+msgid "New Markdown Note"
+msgstr ""
+
+# linsticky/views/main_view/main_view.py:237
+msgid "New Text Note"
+msgstr ""
+
+# linsticky/views/new_note_menu.py:24
+msgid "Text Note"
+msgstr ""
+
+# linsticky/views/new_note_menu.py:24
+msgid "Markdown Note"
+msgstr ""
+
+# linsticky/views/settings_view.py:150
+msgid "Text notes"
+msgstr ""
+
+# linsticky/views/settings_view.py:169
+msgid "Markdown notes"
 msgstr ""

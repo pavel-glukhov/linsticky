@@ -4,6 +4,8 @@ from views.main_view.note_card import NoteCard
 from sticky.sticky_window import StickyWindow
 from views.settings_view import SettingsView
 from views.trash_view import TrashView
+from views.new_note_menu import build_new_note_popover, NOTE_TYPE_MARKDOWN, NOTE_TYPE_TEXT
+from config.config_manager import ConfigManager
 import theme
 
 _ = builtins._
@@ -52,10 +54,13 @@ class MainWindow(Adw.ApplicationWindow):
         header_bar = Adw.HeaderBar()
         header_bar.set_show_end_title_buttons(True)
 
-        btn_new = Gtk.Button(icon_name="list-add-symbolic")
-        btn_new.add_css_class("flat")
-        btn_new.connect("clicked", lambda _: self.create_note())
-        header_bar.pack_start(btn_new)
+        # "+" creates a note of the last chosen type; the arrow chooses the type.
+        self.btn_new = Adw.SplitButton(icon_name="list-add-symbolic")
+        self.btn_new.connect("clicked", lambda _b: self.create_note())
+        self.btn_new.set_popover(build_new_note_popover(self.create_note))
+        self.btn_new.set_dropdown_tooltip(_("Choose the note type"))
+        self._update_new_button_tooltip()
+        header_bar.pack_start(self.btn_new)
 
         btn_trash = Gtk.Button(icon_name="user-trash-symbolic")
         btn_trash.add_css_class("flat")
@@ -124,8 +129,8 @@ class MainWindow(Adw.ApplicationWindow):
         """
         Reloads the configuration from disk and propagates changes to all open sticky notes.
         """
-        from config.config_manager import ConfigManager
         self.config = ConfigManager.load()
+        self._update_new_button_tooltip()
 
         for note_id, sticky_window in self.stickies.items():
             if hasattr(sticky_window, 'reload_config'):
@@ -201,19 +206,35 @@ class MainWindow(Adw.ApplicationWindow):
             return True
         return self._search_query in child.get_child().get_search_text()
 
-    def create_note(self):
-        """Creates a new sticky note and opens it."""
+    def create_note(self, markdown: bool = None):
+        """
+        Creates a new sticky note and opens it.
+
+        Args:
+            markdown: True for a Markdown note, False for a text note, None for
+                the type chosen last. An explicit choice is remembered.
+        """
+        if markdown is None:
+            markdown = self.config.get("new_note_type") == NOTE_TYPE_MARKDOWN
+        else:
+            note_type = NOTE_TYPE_MARKDOWN if markdown else NOTE_TYPE_TEXT
+            if self.config.get("new_note_type") != note_type:
+                self.config["new_note_type"] = note_type
+                ConfigManager.update({"new_note_type": note_type})
+                self._update_new_button_tooltip()
+
         palette = self.config.get("palette", [])
         default_color = palette[0] if palette else "#FFF59D"
-        # Markdown applies only to notes created while it is enabled; existing
-        # (rich text) notes are never converted.
-        md_config = self.config.get("markdown")
-        use_markdown = isinstance(md_config, dict) and bool(md_config.get("enabled", False))
-        note_id = self.db.add(color=default_color, is_markdown=use_markdown)
+        # The type is fixed at creation; existing notes are never converted.
+        note_id = self.db.add(color=default_color, is_markdown=markdown)
         note = self.db.get(note_id)
         if note:
             self._add_card(note)
         self.open_note(note_id)
+
+    def _update_new_button_tooltip(self):
+        markdown = self.config.get("new_note_type") == NOTE_TYPE_MARKDOWN
+        self.btn_new.set_tooltip_text(_("New Markdown Note") if markdown else _("New Text Note"))
 
     def open_note(self, note_id: int):
         """

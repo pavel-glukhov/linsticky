@@ -2,7 +2,7 @@
 
 Modern sticky notes application built with Python, GTK4, and Libadwaita for Linux.
 
-### **Version**: 2.1.1
+### **Version**: 2.2.0
 _______________
 
 > [!IMPORTANT]
@@ -20,6 +20,7 @@ _______________
 ![example of app](https://github.com/pavel-glukhov/linsticky/blob/gtk/pic/example_2.0.0.png)
 
 ## 📑 Table of Contents
+- [What's New in 2.2.0](#-whats-new-in-220)
 - [What's New in 2.1.1](#-whats-new-in-211)
 - [Features](#-features)
 - [Installation](#installation)
@@ -28,6 +29,12 @@ _______________
 - [Troubleshooting Localization](#troubleshooting-localization)
 - [Credits](#credits)
 
+
+## 🆕 What's New in 2.2.0
+
+- **Choose the note type when creating a note.** In the main window, **+** creates a note of the last chosen type and the arrow next to it offers *Text Note* or *Markdown Note*; **+** on a sticker opens the same choice. The *Markdown mode* switch is gone.
+- **Formatting buttons for both note types in Settings:** *Formatting Buttons* (text notes) and *Markdown Toolbar* (Markdown notes). A sticker's *Customize* dialog shows the buttons of its own type.
+- If Markdown mode was on in 2.1.x, **+** keeps creating Markdown notes until you pick another type.
 
 ## 🆕 What's New in 2.1.1
 
@@ -48,7 +55,7 @@ Personalize your notes by choosing colors that match your workflow and mood.
 - ✍️ Rich Text Preservation
 All text formatting is reliably saved, so your notes always look exactly as intended.
 - Ⓜ️ Markdown Notes
-Turn on **Markdown mode** in Settings and new notes are created in Markdown (existing notes are never converted). Switch between source and rendered preview with the header button, `Ctrl+E`, or a double-click on the preview; the bottom toolbar inserts Markdown (its buttons are configurable). Supports headings, bold/italic/strikethrough, inline and fenced code, links, bullet/numbered/task lists, quotes and horizontal rules.
+Create a Markdown note from the **+** menu (*Markdown Note*); text notes are never converted. Switch between source and rendered preview with the header button, `Ctrl+E`, or a double-click on the preview; the bottom toolbar inserts Markdown (its buttons are configurable). Supports headings, bold/italic/strikethrough, inline and fenced code, links, bullet/numbered/task lists, quotes and horizontal rules.
 - 🌍 Multilingual Support
 Use the app in multiple languages, including:
   - English
@@ -82,14 +89,14 @@ You can download the latest .deb package from the [Releases page](https://github
 
 ```bash
 # 1. Download the package
-curl -O -L https://github.com/pavel-glukhov/linsticky/releases/download/v2.1.1/io.linsticky.app_2.1.1_all.deb
+curl -O -L https://github.com/pavel-glukhov/linsticky/releases/download/v2.2.0/io.linsticky.app_2.2.0_all.deb
 
 # 2. Install dependencies
 sudo apt update
 sudo apt install -y python3-gi gir1.2-gtk-4.0 gir1.2-adw-1 gir1.2-gtk-3.0 gir1.2-ayatanaappindicator3-0.1 gettext
 
 # 3. Install the package
-sudo dpkg -i io.linsticky.app_2.1.1_all.deb
+sudo dpkg -i io.linsticky.app_2.2.0_all.deb
 ```
 
 ## Troubleshooting Localization

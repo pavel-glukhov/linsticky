@@ -241,11 +241,6 @@ msgstr "Réinitialiser"
 msgid "Formatting Buttons"
 msgstr "Boutons de mise en forme"
 
-# linsticky/views/settings_view.py:141
-# /linsticky/views/settings_view.py:141
-msgid "Choose which buttons to show on stickers"
-msgstr "Choisir quels boutons afficher sur les notes"
-
 # linsticky/views/settings_view.py:144
 # /linsticky/views/settings_view.py:144
 msgid "Bold (B)"
@@ -303,16 +298,6 @@ msgstr ""
 "Certaines modifications nécessitent un redémarrage de l’application pour "
 "être pleinement effectives."
 
-# linsticky/views/settings_view.py:324
-# /linsticky/views/settings_view.py:324
-msgid "OK"
-msgstr "OK"
-
-# linsticky/views/settings_view.py
-# linsticky/sticky/customization_dialog.py
-msgid "Markdown mode"
-msgstr "Mode Markdown"
-
 # linsticky/sticky/sticky_markdown.py
 msgid "Edit (Ctrl+E)"
 msgstr "Modifier (Ctrl+E)"
@@ -357,10 +342,6 @@ msgstr "Ligne horizontale"
 msgid "Markdown Toolbar"
 msgstr "Barre Markdown"
 
-# linsticky/views/settings_view.py
-msgid "New notes are created in Markdown; existing notes are not changed"
-msgstr "Les nouvelles notes sont créées en Markdown ; les notes existantes ne changent pas"
-
 # linsticky/views/settings_view.py:391
 msgid "Later"
 msgstr "Plus tard"
@@ -368,3 +349,35 @@ msgstr "Plus tard"
 # linsticky/views/settings_view.py:392
 msgid "Restart Now"
 msgstr "Redémarrer maintenant"
+
+# linsticky/sticky/sticky_ui.py:50
+msgid "New note"
+msgstr "Nouvelle note"
+
+# linsticky/views/main_view/main_view.py:61
+msgid "Choose the note type"
+msgstr "Choisir le type de note"
+
+# linsticky/views/main_view/main_view.py:237
+msgid "New Markdown Note"
+msgstr "Nouvelle note Markdown"
+
+# linsticky/views/main_view/main_view.py:237
+msgid "New Text Note"
+msgstr "Nouvelle note texte"
+
+# linsticky/views/new_note_menu.py:24
+msgid "Text Note"
+msgstr "Note texte"
+
+# linsticky/views/new_note_menu.py:24
+msgid "Markdown Note"
+msgstr "Note Markdown"
+
+# linsticky/views/settings_view.py:150
+msgid "Text notes"
+msgstr "Notes texte"
+
+# linsticky/views/settings_view.py:169
+msgid "Markdown notes"
+msgstr "Notes Markdown"

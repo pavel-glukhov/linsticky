@@ -241,11 +241,6 @@ msgstr "Sıfırla"
 msgid "Formatting Buttons"
 msgstr "Biçimlendirme Düğmeleri"
 
-# linsticky/views/settings_view.py:141
-# /linsticky/views/settings_view.py:141
-msgid "Choose which buttons to show on stickers"
-msgstr "Yapışkan notlarda hangi düğmelerin gösterileceğini seçin"
-
 # linsticky/views/settings_view.py:144
 # /linsticky/views/settings_view.py:144
 msgid "Bold (B)"
@@ -303,16 +298,6 @@ msgstr ""
 "Bazı değişikliklerin tam olarak etkili olması için uygulamanın yeniden "
 "başlatılması gerekir."
 
-# linsticky/views/settings_view.py:324
-# /linsticky/views/settings_view.py:324
-msgid "OK"
-msgstr "Tamam"
-
-# linsticky/views/settings_view.py
-# linsticky/sticky/customization_dialog.py
-msgid "Markdown mode"
-msgstr "Markdown modu"
-
 # linsticky/sticky/sticky_markdown.py
 msgid "Edit (Ctrl+E)"
 msgstr "Düzenle (Ctrl+E)"
@@ -357,10 +342,6 @@ msgstr "Yatay çizgi"
 msgid "Markdown Toolbar"
 msgstr "Markdown araç çubuğu"
 
-# linsticky/views/settings_view.py
-msgid "New notes are created in Markdown; existing notes are not changed"
-msgstr "Yeni notlar Markdown ile oluşturulur; mevcut notlar değişmez"
-
 # linsticky/views/settings_view.py:391
 msgid "Later"
 msgstr "Daha sonra"
@@ -368,3 +349,35 @@ msgstr "Daha sonra"
 # linsticky/views/settings_view.py:392
 msgid "Restart Now"
 msgstr "Şimdi yeniden başlat"
+
+# linsticky/sticky/sticky_ui.py:50
+msgid "New note"
+msgstr "Yeni not"
+
+# linsticky/views/main_view/main_view.py:61
+msgid "Choose the note type"
+msgstr "Not türünü seç"
+
+# linsticky/views/main_view/main_view.py:237
+msgid "New Markdown Note"
+msgstr "Yeni Markdown notu"
+
+# linsticky/views/main_view/main_view.py:237
+msgid "New Text Note"
+msgstr "Yeni metin notu"
+
+# linsticky/views/new_note_menu.py:24
+msgid "Text Note"
+msgstr "Metin notu"
+
+# linsticky/views/new_note_menu.py:24
+msgid "Markdown Note"
+msgstr "Markdown notu"
+
+# linsticky/views/settings_view.py:150
+msgid "Text notes"
+msgstr "Metin notları"
+
+# linsticky/views/settings_view.py:169
+msgid "Markdown notes"
+msgstr "Markdown notları"

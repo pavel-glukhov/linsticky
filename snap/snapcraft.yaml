@@ -1,6 +1,6 @@
 name: linsticky
 base: core24
-version: '2.1.1'
+version: '2.2.0'
 summary: Lightweight and elegant sticky notes for your Linux desktop.
 license: MIT
 description: |
@@ -11,7 +11,7 @@ description: |
               🎨 Personalization: Organize your thoughts with a custom color palette.
               🌙 Night Theme: Full support for dark mode.
               ✍️ Formatting: Full support for rich text preservation (bold, italics, lists, change color and font size).
-              Ⓜ️ Markdown: Optional Markdown notes with a rendered preview and a configurable formatting toolbar.
+              Ⓜ️ Markdown: Create text or Markdown notes; Markdown notes have a rendered preview and a configurable formatting toolbar.
               🐧 Native Experience: Built with Libadwaita to look perfect on GNOME and other modern desktops.
               🌍 Multilingual: Fully localized in English, Español, Deutsch, Français, Русский, Қазақша, and more.
               

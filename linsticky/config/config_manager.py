@@ -70,11 +70,11 @@ class ConfigManager:
                 "strikethrough": True, "list": True, "text_color": True,
                 "font_size": True
             },
-            # Markdown notes: whether NEW notes are created in Markdown (off by
-            # default, so an update changes nothing), and which buttons the
-            # sticker toolbar shows for Markdown notes.
+            # Type created by the main window's "+" button: the last one chosen
+            # in its menu ("text" or "markdown").
+            "new_note_type": "text",
+            # Toolbar buttons shown on Markdown notes.
             "markdown": {
-                "enabled": False,
                 "buttons": dict(MD_TOOLBAR_DEFAULTS),
             }
         }
@@ -116,6 +116,11 @@ class ConfigManager:
 
             config["markdown"] = cls._merge_markdown(defaults["markdown"], loaded_config)
             config["formatting"].pop("markdown", None)
+            if loaded_config.get("new_note_type") not in ("text", "markdown"):
+                # 2.1.x had a "Markdown mode" switch for new notes instead.
+                old = loaded_config.get("markdown")
+                enabled = isinstance(old, dict) and old.get("enabled") is True
+                config["new_note_type"] = "markdown" if enabled else "text"
 
             return config
         except (json.JSONDecodeError, OSError) as e:
@@ -125,15 +130,25 @@ class ConfigManager:
     @staticmethod
     def _merge_markdown(default: dict, loaded_config: dict) -> dict:
         """Returns the Markdown settings with defaults for missing keys."""
-        result = {"enabled": default["enabled"], "buttons": dict(default["buttons"])}
+        result = {"buttons": dict(default["buttons"])}
         loaded = loaded_config.get("markdown")
         if isinstance(loaded, dict):
-            if isinstance(loaded.get("enabled"), bool):
-                result["enabled"] = loaded["enabled"]
             if isinstance(loaded.get("buttons"), dict):
                 result["buttons"].update(
                     {k: bool(v) for k, v in loaded["buttons"].items() if k in result["buttons"]})
         return result
+
+    @classmethod
+    def update(cls, values: dict) -> dict:
+        """
+        Writes only the given keys on top of the configuration currently on
+        disk (so other windows' unsaved copies cannot overwrite them).
+        Returns the updated configuration.
+        """
+        config = cls.load()
+        config.update(values)
+        cls.save(config)
+        return config
 
     @staticmethod
     def save(config_dict: dict):

@@ -9,6 +9,7 @@ from gi.repository import Gtk, Gdk
 import builtins
 
 import theme
+from views.new_note_menu import build_new_note_popover
 
 if not hasattr(builtins, "_"):
     builtins._ = lambda s: s
@@ -42,9 +43,12 @@ class StickyUI:
         self.header_box.set_size_request(-1, int(22 * self.scale))
         self.header_box.add_css_class("compact-header")
 
-        btn_add = Gtk.Button(label="+", has_frame=False)
+        # "+" opens the note type chooser (Text Note / Markdown Note).
+        btn_add = Gtk.MenuButton(has_frame=False)
+        btn_add.set_child(Gtk.Label(label="+"))  # custom child: no dropdown arrow
         btn_add.add_css_class("header-btn-subtle")
-        btn_add.connect("clicked", self._on_add_clicked)
+        btn_add.set_tooltip_text(builtins._("New note"))
+        btn_add.set_popover(build_new_note_popover(self._on_add_note_chosen))
         self.header_box.append(btn_add)
 
         # The spacer is a draggable area for moving the window.
