@@ -107,8 +107,6 @@ class StickyUI:
         box_custom.add_controller(click_custom)
         self.menu_vbox.append(box_custom)
 
-        # Markdown mode toggle (visibility follows the settings, see sync_markdown_ui)
-        self.menu_vbox.append(self.create_markdown_menu_item(popover))
 
         # Print Menu Item
         box_print = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10, margin_top=5, margin_bottom=5, margin_start=5, margin_end=5)

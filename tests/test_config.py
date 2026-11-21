@@ -11,10 +11,10 @@ def load_with(tmp_path, monkeypatch, data):
     return cm.ConfigManager.load()
 
 
-def test_old_formatting_flag_migrates(tmp_path, monkeypatch):
-    cfg = load_with(tmp_path, monkeypatch, {"formatting": {"bold": False, "markdown": False}})
+def test_config_from_previous_version_keeps_markdown_off(tmp_path, monkeypatch):
+    # A config written by the previous release has no "markdown" section.
+    cfg = load_with(tmp_path, monkeypatch, {"language": "ru", "formatting": {"bold": False}})
     assert cfg["markdown"]["enabled"] is False
-    assert "markdown" not in cfg["formatting"]
     assert cfg["formatting"]["bold"] is False
     assert cfg["markdown"]["buttons"]["bold"] is True
 

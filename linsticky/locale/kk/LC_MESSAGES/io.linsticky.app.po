@@ -317,10 +317,6 @@ msgstr ""
 msgid "OK"
 msgstr "OK"
 
-# linsticky/sticky/sticky_markdown.py
-msgid "Markdown"
-msgstr "Markdown"
-
 # linsticky/views/settings_view.py
 # linsticky/sticky/customization_dialog.py
 msgid "Markdown mode"
@@ -333,18 +329,6 @@ msgstr "Өңдеу (Ctrl+E)"
 # linsticky/sticky/sticky_markdown.py
 msgid "Preview (Ctrl+E)"
 msgstr "Алдын ала қарау (Ctrl+E)"
-
-# linsticky/sticky/sticky_markdown.py
-msgid "Convert to Markdown?"
-msgstr "Markdown-ға түрлендіру керек пе?"
-
-# linsticky/sticky/sticky_markdown.py
-msgid "Underline, text colors and font sizes have no Markdown equivalent and will be removed."
-msgstr "Асты сызу, мәтін түстері мен қаріп өлшемдерінің Markdown-да баламасы жоқ, сондықтан олар жойылады."
-
-# linsticky/sticky/sticky_markdown.py
-msgid "Convert"
-msgstr "Түрлендіру"
 
 # linsticky/content/markdown_edit.py
 msgid "Heading"
@@ -383,5 +367,5 @@ msgid "Markdown Toolbar"
 msgstr "Markdown құралдар тақтасы"
 
 # linsticky/views/settings_view.py
-msgid "Allow Markdown notes and choose their toolbar buttons"
-msgstr "Markdown жазбаларына рұқсат беру және тақта батырмаларын таңдау"
+msgid "New notes are created in Markdown; existing notes are not changed"
+msgstr "Жаңа жазбалар Markdown-да жасалады; бұрынғылары өзгермейді"

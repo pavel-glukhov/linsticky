@@ -316,10 +316,6 @@ msgstr "Some changes require an application restart to take full effect."
 msgid "OK"
 msgstr "OK"
 
-# linsticky/sticky/sticky_markdown.py
-msgid "Markdown"
-msgstr "Markdown"
-
 # linsticky/views/settings_view.py
 # linsticky/sticky/customization_dialog.py
 msgid "Markdown mode"
@@ -332,18 +328,6 @@ msgstr "Edit (Ctrl+E)"
 # linsticky/sticky/sticky_markdown.py
 msgid "Preview (Ctrl+E)"
 msgstr "Preview (Ctrl+E)"
-
-# linsticky/sticky/sticky_markdown.py
-msgid "Convert to Markdown?"
-msgstr "Convert to Markdown?"
-
-# linsticky/sticky/sticky_markdown.py
-msgid "Underline, text colors and font sizes have no Markdown equivalent and will be removed."
-msgstr "Underline, text colors and font sizes have no Markdown equivalent and will be removed."
-
-# linsticky/sticky/sticky_markdown.py
-msgid "Convert"
-msgstr "Convert"
 
 # linsticky/content/markdown_edit.py
 msgid "Heading"
@@ -382,5 +366,5 @@ msgid "Markdown Toolbar"
 msgstr "Markdown Toolbar"
 
 # linsticky/views/settings_view.py
-msgid "Allow Markdown notes and choose their toolbar buttons"
-msgstr "Allow Markdown notes and choose their toolbar buttons"
+msgid "New notes are created in Markdown; existing notes are not changed"
+msgstr "New notes are created in Markdown; existing notes are not changed"

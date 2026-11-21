@@ -3,8 +3,8 @@ Minimal Markdown support for notes in "Markdown mode".
 
 A Markdown note stores its raw source as ordinary, untagged text (so older
 versions of the app simply show the source). This module renders that source
-to Pango markup for the preview, and converts between Markdown and the rich
-segment format used by regular notes.
+to Pango markup for the preview and to plain text for search. Rich text notes
+are never converted to or from Markdown.
 
 Supported syntax (a pragmatic subset of CommonMark):
 
@@ -311,89 +311,3 @@ def to_plain(source: str) -> str:
         lines.append(text)
     return "\n".join(lines)
 
-
-# --------------------------------------------------------------------------- conversions
-
-RICH_BULLET = " • "
-_RICH_TO_MD_MARKERS = (("bold", "**"), ("italic", "*"), ("strikethrough", "~~"))
-_MD_STYLE_TO_TAG = {BOLD: "bold", ITALIC: "italic", STRIKE: "strikethrough"}
-
-
-def rich_is_lossless(segments: list[dict]) -> bool:
-    """True if every tag used by the rich note has a Markdown equivalent."""
-    supported = {tag for tag, _ in _RICH_TO_MD_MARKERS}
-    return all(tag in supported for seg in segments for tag in seg.get("tags", []))
-
-
-def rich_to_markdown(segments: list[dict]) -> str:
-    """
-    Converts rich segments to Markdown source. Bold, italic and strikethrough
-    become Markdown markers, " • " bullets become "- " items; other formatting
-    (underline, colors, font sizes) has no Markdown equivalent and is dropped.
-    """
-    out = []
-    for seg in segments:
-        tags = seg.get("tags", [])
-        markers = [marker for tag, marker in _RICH_TO_MD_MARKERS if tag in tags]
-        opening, closing = "".join(markers), "".join(reversed(markers))
-        for k, piece in enumerate(seg.get("text", "").split("\n")):
-            if k:
-                out.append("\n")
-            core = piece.strip()
-            if markers and core:
-                lead = piece[:len(piece) - len(piece.lstrip())]
-                trail = piece[len(piece.rstrip()):]
-                out.append(f"{lead}{opening}{core}{closing}{trail}")
-            else:
-                out.append(piece)
-    lines = "".join(out).split("\n")
-    return "\n".join("- " + line[len(RICH_BULLET):] if line.startswith(RICH_BULLET) else line
-                     for line in lines)
-
-
-def markdown_to_rich(source: str) -> list[dict]:
-    """
-    Converts Markdown source to rich segments, keeping bold, italic and
-    strikethrough; headings become bold, bullets become " • " items.
-    """
-    segments: list[dict] = []
-
-    def add(text: str, tags=()):
-        if not text:
-            return
-        tags = sorted(set(tags))
-        if segments and segments[-1]["tags"] == tags:
-            segments[-1]["text"] += text
-        else:
-            segments.append({"text": text, "tags": tags})
-
-    blocks = parse_blocks(source or "")
-    for index, block in enumerate(blocks):
-        if index:
-            add("\n")
-        extra = []
-        kind = block.kind
-        if kind == "heading":
-            extra = ["bold"]
-        elif kind == "bullet":
-            add("  " * block.level + RICH_BULLET)
-        elif kind == "ordered":
-            add("  " * block.level + block.marker + " ")
-        elif kind == "task":
-            add("  " * block.level + ("☑ " if block.checked else "☐ "))
-        elif kind == "quote":
-            add("│ ")
-            extra = ["italic"]
-        elif kind == "hr":
-            add("—" * 12)
-        elif kind == "code":
-            add(block.text)
-
-        for run in block.runs:
-            tags = extra + [_MD_STYLE_TO_TAG[s] for s in run.styles if s in _MD_STYLE_TO_TAG]
-            text = run.text
-            if run.href and run.href != run.text:
-                text = f"{text} ({run.href})"
-            add(text, tags)
-
-    return segments or [{"text": "", "tags": []}]

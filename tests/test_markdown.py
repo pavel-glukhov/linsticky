@@ -89,37 +89,3 @@ def test_pango_max_lines():
 def test_to_plain():
     assert md.to_plain("# Head\n- **bold** item") == "Head\nbold item"
 
-
-# ---------------------------------------------------------------- conversions
-def test_rich_to_markdown():
-    segments = [
-        {"text": "Plain ", "tags": []},
-        {"text": "bold", "tags": ["bold"]},
-        {"text": "\n • item\n", "tags": []},
-        {"text": " both ", "tags": ["bold", "italic"]},
-    ]
-    assert md.rich_to_markdown(segments) == "Plain **bold**\n- item\n ***both*** "
-
-
-def test_rich_lossless_detection():
-    assert md.rich_is_lossless([{"text": "a", "tags": ["bold", "italic", "strikethrough"]}])
-    assert not md.rich_is_lossless([{"text": "a", "tags": ["underline"]}])
-    assert not md.rich_is_lossless([{"text": "a", "tags": ["text_color_#000000"]}])
-
-
-def test_markdown_to_rich():
-    assert md.markdown_to_rich("# Head\n- **b** and *i*\n~~s~~") == [
-        {"text": "Head", "tags": ["bold"]},
-        {"text": "\n • ", "tags": []},
-        {"text": "b", "tags": ["bold"]},
-        {"text": " and ", "tags": []},
-        {"text": "i", "tags": ["italic"]},
-        {"text": "\n", "tags": []},
-        {"text": "s", "tags": ["strikethrough"]},
-    ]
-
-
-def test_roundtrip_supported_formatting():
-    segments = [{"text": "x ", "tags": []}, {"text": "y", "tags": ["bold"]},
-                {"text": "\n • z", "tags": []}]
-    assert md.markdown_to_rich(md.rich_to_markdown(segments)) == segments

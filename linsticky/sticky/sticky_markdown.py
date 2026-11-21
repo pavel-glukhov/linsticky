@@ -1,6 +1,10 @@
 """
 Markdown mode for StickyWindow ("source / preview").
 
+The mode is fixed when a note is created: new notes use Markdown while it is
+enabled in the settings; notes created as rich text (including all notes from
+earlier versions) are never converted.
+
 A note in Markdown mode keeps its raw Markdown source as untagged text in the
 regular text buffer (so saving, the database format and older app versions are
 unaffected). The note can be shown either as editable source or as a rendered,
@@ -10,7 +14,7 @@ chosen in the settings.
 """
 import builtins
 
-from gi.repository import Gtk, Gdk, Adw, GLib, Pango
+from gi.repository import Gtk, Gdk, GLib, Pango
 
 from content import markdown as md
 from content import markdown_edit as md_edit
@@ -27,7 +31,7 @@ def markdown_settings(config: dict) -> tuple[bool, dict]:
     buttons = dict(md_edit.MD_TOOLBAR_DEFAULTS)
     if isinstance(section.get("buttons"), dict):
         buttons.update({k: bool(v) for k, v in section["buttons"].items() if k in buttons})
-    return bool(section.get("enabled", True)), buttons
+    return bool(section.get("enabled", False)), buttons
 
 
 class StickyMarkdown:
@@ -67,32 +71,8 @@ class StickyMarkdown:
         self.btn_md_toggle.set_visible(False)
         return self.btn_md_toggle
 
-    def create_markdown_menu_item(self, popover: Gtk.Popover) -> Gtk.Widget:
-        """Check item in the note menu that turns Markdown mode on/off."""
-        self._md_syncing = False
-        self.chk_markdown = Gtk.CheckButton(label=builtins._("Markdown"),
-                                            margin_top=5, margin_bottom=5, margin_start=5, margin_end=5)
-        self.chk_markdown.set_active(getattr(self, "is_markdown", False))
-
-        def on_toggled(check):
-            if self._md_syncing:
-                return
-            popover.popdown()
-            self.request_markdown_mode(check.get_active())
-
-        self.chk_markdown.connect("toggled", on_toggled)
-        return self.chk_markdown
-
     def sync_markdown_ui(self):
-        """Brings header button, menu check, toolbar and stack page in line with the mode."""
-        if getattr(self, "chk_markdown", None) is not None:
-            self._md_syncing = True
-            self.chk_markdown.set_active(self.is_markdown)
-            self._md_syncing = False
-            # When Markdown is turned off in the settings, the item stays only
-            # on notes that are already Markdown, so they can be switched back.
-            enabled, _buttons = markdown_settings(self.config)
-            self.chk_markdown.set_visible(enabled or self.is_markdown)
+        """Brings header button, toolbar and stack page in line with the mode."""
         if getattr(self, "btn_md_toggle", None) is not None:
             self.btn_md_toggle.set_visible(self.is_markdown)
         if not self.is_markdown:
@@ -147,57 +127,6 @@ class StickyMarkdown:
             self.set_markdown_preview(not self.md_preview_active)
             return True
         return False
-
-    # ------------------------------------------------------------------ mode switch
-    def request_markdown_mode(self, enabled: bool):
-        """Switches the note mode, asking for confirmation if formatting would be lost."""
-        if enabled == self.is_markdown:
-            return
-        if enabled and not md.rich_is_lossless(self._get_buffer_segments()):
-            dialog = Adw.MessageDialog(
-                transient_for=self,
-                heading=builtins._("Convert to Markdown?"),
-                body=builtins._("Underline, text colors and font sizes have no Markdown "
-                                "equivalent and will be removed."),
-            )
-            dialog.add_response("cancel", builtins._("Cancel"))
-            dialog.add_response("convert", builtins._("Convert"))
-            dialog.set_response_appearance("convert", Adw.ResponseAppearance.DESTRUCTIVE)
-
-            def on_response(d, response):
-                if response == "convert":
-                    self._set_markdown_mode(True)
-                else:
-                    self.sync_markdown_ui()
-                d.close()
-
-            dialog.connect("response", on_response)
-            dialog.present()
-            return
-        self._set_markdown_mode(enabled)
-
-    def _set_markdown_mode(self, enabled: bool):
-        segments = self._get_buffer_segments()
-        self.is_markdown = enabled
-        if self.main_window:
-            self.main_window.set_card_markdown(self.note_id, enabled)
-
-        self.buffer.begin_user_action()
-        if enabled:
-            self.buffer.set_text(md.rich_to_markdown(segments))
-        else:
-            source = "".join(seg["text"] for seg in segments)
-            self.buffer.set_text("")
-            self._insert_segments(md.markdown_to_rich(source))
-        self.buffer.end_user_action()
-
-        if self.note_id:
-            self.db.set_markdown(self.note_id, enabled)
-        self._dirty = True
-        self._on_buffer_changed(self.buffer)
-
-        self.md_preview_active = enabled and bool(self._get_buffer_text().strip())
-        self.sync_markdown_ui()
 
     # ------------------------------------------------------------------ editing helpers
     def _get_buffer_text(self) -> str:

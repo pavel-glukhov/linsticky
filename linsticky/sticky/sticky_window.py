@@ -13,7 +13,7 @@ from .sticky_formatting import StickyFormatting
 from .sticky_actions import StickyActions
 from .sticky_ui import StickyUI
 from .sticky_events import StickyEvents
-from .sticky_markdown import StickyMarkdown, markdown_settings
+from .sticky_markdown import StickyMarkdown
 
 
 class StickyWindow(Adw.Window, StickyFormatting, StickyActions, StickyUI, StickyEvents, StickyMarkdown):
@@ -92,8 +92,6 @@ class StickyWindow(Adw.Window, StickyFormatting, StickyActions, StickyUI, Sticky
             # Markdown notes open in the rendered preview when they have content.
             self.md_preview_active = bool(self._get_buffer_text().strip())
             self.sync_markdown_ui()
-        elif not markdown_settings(self.config)[0]:
-            self.sync_markdown_ui()  # hides the Markdown menu item
 
         # --- Event and Persistence Controllers ---
         focus_ctrl = Gtk.EventControllerFocus()

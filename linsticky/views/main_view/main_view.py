@@ -205,7 +205,11 @@ class MainWindow(Adw.ApplicationWindow):
         """Creates a new sticky note and opens it."""
         palette = self.config.get("palette", [])
         default_color = palette[0] if palette else "#FFF59D"
-        note_id = self.db.add(color=default_color)
+        # Markdown applies only to notes created while it is enabled; existing
+        # (rich text) notes are never converted.
+        md_config = self.config.get("markdown")
+        use_markdown = isinstance(md_config, dict) and bool(md_config.get("enabled", False))
+        note_id = self.db.add(color=default_color, is_markdown=use_markdown)
         note = self.db.get(note_id)
         if note:
             self._add_card(note)
@@ -263,12 +267,6 @@ class MainWindow(Adw.ApplicationWindow):
             card.set_segments(serialized_content)
             if self._search_query:
                 self.flowbox.invalidate_filter()
-
-    def set_card_markdown(self, note_id: int, enabled: bool):
-        """Tells a card whether its note is rendered as Markdown."""
-        card = self.cards.get(note_id)
-        if card:
-            card.is_markdown = enabled
 
     def update_card_color_live(self, note_id: int, color: str):
         """

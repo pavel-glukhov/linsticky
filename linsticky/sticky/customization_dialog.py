@@ -28,7 +28,8 @@ class CustomizationDialog(Gtk.Window):
         self.config = ConfigManager.load()
         self.formatting_config = self.config.get("formatting", {}).copy()
         md_config = self.config.get("markdown", {})
-        self.md_enabled = md_config.get("enabled", True)
+        # Markdown mode only decides how NEW notes are created.
+        self.md_enabled = md_config.get("enabled", False)
         self.md_buttons = {b.key: md_config.get("buttons", {}).get(b.key, b.default) for b in MD_TOOLBAR}
 
         # Main layout: scrollable options above a fixed Save button.
@@ -68,7 +69,8 @@ class CustomizationDialog(Gtk.Window):
         # --- Markdown ---
         vbox.append(self._title(builtins._("Markdown Toolbar")))
         md_mode_box = self._list()
-        self._switch_row(md_mode_box, builtins._("Markdown mode"), self.md_enabled, self._on_md_enabled)
+        self._switch_row(md_mode_box, builtins._("Markdown mode"), self.md_enabled, self._on_md_enabled,
+                         subtitle=builtins._("New notes are created in Markdown; existing notes are not changed"))
         vbox.append(md_mode_box)
 
         self.md_list = self._list()
@@ -77,7 +79,6 @@ class CustomizationDialog(Gtk.Window):
             self.md_switches[button.key] = self._switch_row(
                 self.md_list, builtins._(button.tooltip), self.md_buttons[button.key],
                 lambda state, k=button.key: self.md_buttons.__setitem__(k, state))
-        self.md_list.set_sensitive(self.md_enabled)
         vbox.append(self.md_list)
 
         # Save Button
@@ -104,9 +105,12 @@ class CustomizationDialog(Gtk.Window):
         return list_box
 
     @staticmethod
-    def _switch_row(list_box: Gtk.ListBox, title: str, active: bool, on_change) -> Gtk.Switch:
+    def _switch_row(list_box: Gtk.ListBox, title: str, active: bool, on_change,
+                    subtitle: str = None) -> Gtk.Switch:
         row = Adw.ActionRow()
         row.set_title(title)
+        if subtitle:
+            row.set_subtitle(subtitle)
         switch = Gtk.Switch()
         switch.set_active(active)
         switch.set_valign(Gtk.Align.CENTER)
@@ -118,7 +122,6 @@ class CustomizationDialog(Gtk.Window):
 
     def _on_md_enabled(self, state: bool):
         self.md_enabled = state
-        self.md_list.set_sensitive(state)
 
     def _on_save_clicked(self, button):
         """Saves configuration and triggers update in the main application."""

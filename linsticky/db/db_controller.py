@@ -80,7 +80,8 @@ class NotesDB:
             x: int = 300, y: int = 200,
             w: int = 260, h: int = 200,
             color: str = "#FFF59D",
-            always_on_top: int = 0) -> int:
+            always_on_top: int = 0,
+            is_markdown: bool = False) -> int:
         """
         Adds a new note to the database.
         Args:
@@ -92,6 +93,8 @@ class NotesDB:
             h (int, optional): Height of the note window. Defaults to 200.
             color (str, optional): Background color of the note. Defaults to "#FFF59D".
             always_on_top (int, optional): Whether the note is always on top (0 or 1). Defaults to 0.
+            is_markdown (bool, optional): Create the note in Markdown mode. The mode is
+                fixed at creation, so notes from older versions always stay rich text.
         Returns:
             int: The ID of the newly added note.
         """
@@ -101,9 +104,9 @@ class NotesDB:
             title = f"Sticker {count + 1}"
         with self.conn:
             cur = self.conn.execute(
-                "INSERT INTO notes(title, content, x, y, w, h, color, always_on_top) "
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-                (title, content, x, y, w, h, color, always_on_top)
+                "INSERT INTO notes(title, content, x, y, w, h, color, always_on_top, is_markdown) "
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                (title, content, x, y, w, h, color, always_on_top, 1 if is_markdown else 0)
             )
             return cur.lastrowid
 
@@ -221,16 +224,6 @@ class NotesDB:
         """
         with self.conn:
             self.conn.execute("UPDATE notes SET color = ? WHERE id = ?", (color, note_id))
-
-    def set_markdown(self, note_id: int, enabled: bool):
-        """
-        Switches a note between rich text and Markdown mode.
-        Args:
-            note_id (int): The ID of the note.
-            enabled (bool): True for Markdown mode.
-        """
-        with self.conn:
-            self.conn.execute("UPDATE notes SET is_markdown=? WHERE id=?", (1 if enabled else 0, note_id))
 
     def set_open_state(self, note_id: int, state: int):
         """

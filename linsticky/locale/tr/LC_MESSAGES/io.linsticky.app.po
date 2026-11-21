@@ -319,10 +319,6 @@ msgstr ""
 msgid "OK"
 msgstr "Tamam"
 
-# linsticky/sticky/sticky_markdown.py
-msgid "Markdown"
-msgstr "Markdown"
-
 # linsticky/views/settings_view.py
 # linsticky/sticky/customization_dialog.py
 msgid "Markdown mode"
@@ -335,18 +331,6 @@ msgstr "Düzenle (Ctrl+E)"
 # linsticky/sticky/sticky_markdown.py
 msgid "Preview (Ctrl+E)"
 msgstr "Önizleme (Ctrl+E)"
-
-# linsticky/sticky/sticky_markdown.py
-msgid "Convert to Markdown?"
-msgstr "Markdown'a dönüştürülsün mü?"
-
-# linsticky/sticky/sticky_markdown.py
-msgid "Underline, text colors and font sizes have no Markdown equivalent and will be removed."
-msgstr "Altı çizili metin, metin renkleri ve yazı tipi boyutlarının Markdown'da karşılığı yoktur ve kaldırılacaktır."
-
-# linsticky/sticky/sticky_markdown.py
-msgid "Convert"
-msgstr "Dönüştür"
 
 # linsticky/content/markdown_edit.py
 msgid "Heading"
@@ -385,5 +369,5 @@ msgid "Markdown Toolbar"
 msgstr "Markdown araç çubuğu"
 
 # linsticky/views/settings_view.py
-msgid "Allow Markdown notes and choose their toolbar buttons"
-msgstr "Markdown notlarına izin ver ve araç çubuğu düğmelerini seç"
+msgid "New notes are created in Markdown; existing notes are not changed"
+msgstr "Yeni notlar Markdown ile oluşturulur; mevcut notlar değişmez"

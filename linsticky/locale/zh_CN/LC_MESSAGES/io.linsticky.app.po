@@ -258,10 +258,6 @@ msgstr "某些更改需要重启应用程序才能完全生效。"
 msgid "OK"
 msgstr "确定"
 
-# linsticky/sticky/sticky_markdown.py
-msgid "Markdown"
-msgstr "Markdown"
-
 # linsticky/views/settings_view.py
 # linsticky/sticky/customization_dialog.py
 msgid "Markdown mode"
@@ -274,18 +270,6 @@ msgstr "编辑 (Ctrl+E)"
 # linsticky/sticky/sticky_markdown.py
 msgid "Preview (Ctrl+E)"
 msgstr "预览 (Ctrl+E)"
-
-# linsticky/sticky/sticky_markdown.py
-msgid "Convert to Markdown?"
-msgstr "转换为 Markdown？"
-
-# linsticky/sticky/sticky_markdown.py
-msgid "Underline, text colors and font sizes have no Markdown equivalent and will be removed."
-msgstr "下划线、文字颜色和字号在 Markdown 中没有对应格式，将被移除。"
-
-# linsticky/sticky/sticky_markdown.py
-msgid "Convert"
-msgstr "转换"
 
 # linsticky/content/markdown_edit.py
 msgid "Heading"
@@ -324,5 +308,5 @@ msgid "Markdown Toolbar"
 msgstr "Markdown 工具栏"
 
 # linsticky/views/settings_view.py
-msgid "Allow Markdown notes and choose their toolbar buttons"
-msgstr "允许 Markdown 便笺并选择其工具栏按钮"
+msgid "New notes are created in Markdown; existing notes are not changed"
+msgstr "新便笺以 Markdown 创建；现有便笺保持不变"

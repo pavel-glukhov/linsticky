@@ -165,15 +165,21 @@ class SettingsView(Gtk.Box):
         list_box.append(fmt_expander)
 
         # --- Markdown Settings ---
-        # The expander's switch turns the Markdown mode on/off; its rows choose
-        # which Markdown buttons the sticker toolbar shows.
+        # The switch only decides how NEW notes are created; the expander
+        # chooses the toolbar buttons of Markdown notes.
         md_config = self.config.get("markdown", {})
-        self.md_expander = Adw.ExpanderRow(
+        row_md = Adw.ActionRow(
             title=_("Markdown mode"),
-            subtitle=_("Allow Markdown notes and choose their toolbar buttons"),
-            show_enable_switch=True,
+            subtitle=_("New notes are created in Markdown; existing notes are not changed"),
         )
-        self.md_expander.set_enable_expansion(md_config.get("enabled", True))
+        self.md_switch = Gtk.Switch(valign=Gtk.Align.CENTER)
+        self.md_switch.set_active(md_config.get("enabled", False))
+        row_md.add_suffix(self.md_switch)
+        row_md.set_activatable_widget(self.md_switch)
+        list_box.append(row_md)
+
+        self.md_expander = Adw.ExpanderRow(title=_("Markdown Toolbar"),
+                                           subtitle=_("Choose which buttons to show on stickers"))
         self.md_switches = {}
         for button in MD_TOOLBAR:
             row = Adw.ActionRow(title=_(button.tooltip))
@@ -206,7 +212,7 @@ class SettingsView(Gtk.Box):
             switch.set_active(current_fmt.get(key, True))
 
         md_config = self.config.get("markdown", {})
-        self.md_expander.set_enable_expansion(md_config.get("enabled", True))
+        self.md_switch.set_active(md_config.get("enabled", False))
         for button in MD_TOOLBAR:
             self.md_switches[button.key].set_active(
                 md_config.get("buttons", {}).get(button.key, button.default))
@@ -351,7 +357,7 @@ class SettingsView(Gtk.Box):
         fmt_settings = {key: switch.get_active() for key, switch in self.switches.items()}
         self.config["formatting"] = fmt_settings
         self.config["markdown"] = {
-            "enabled": self.md_expander.get_enable_expansion(),
+            "enabled": self.md_switch.get_active(),
             "buttons": {key: check.get_active() for key, check in self.md_switches.items()},
         }
 

@@ -258,10 +258,6 @@ msgstr ""
 msgid "OK"
 msgstr ""
 
-# linsticky/sticky/sticky_markdown.py
-msgid "Markdown"
-msgstr ""
-
 # linsticky/views/settings_view.py
 # linsticky/sticky/customization_dialog.py
 msgid "Markdown mode"
@@ -273,18 +269,6 @@ msgstr ""
 
 # linsticky/sticky/sticky_markdown.py
 msgid "Preview (Ctrl+E)"
-msgstr ""
-
-# linsticky/sticky/sticky_markdown.py
-msgid "Convert to Markdown?"
-msgstr ""
-
-# linsticky/sticky/sticky_markdown.py
-msgid "Underline, text colors and font sizes have no Markdown equivalent and will be removed."
-msgstr ""
-
-# linsticky/sticky/sticky_markdown.py
-msgid "Convert"
 msgstr ""
 
 # linsticky/content/markdown_edit.py
@@ -324,5 +308,5 @@ msgid "Markdown Toolbar"
 msgstr ""
 
 # linsticky/views/settings_view.py
-msgid "Allow Markdown notes and choose their toolbar buttons"
+msgid "New notes are created in Markdown; existing notes are not changed"
 msgstr ""
