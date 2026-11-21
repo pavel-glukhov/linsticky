@@ -38,10 +38,9 @@ _______________
 
 ![Text and Markdown notes](pic/example_2.2.1.png)
 
-<p>
-  <img src="pic/example_2.2.1_sticks.png" alt="Text and Markdown stickers" height="400">
-  <img src="pic/example_2.2.1_settings.png" alt="Settings" height="400">
-</p>
+![Text and Markdown stickers](pic/example_2.2.1_sticks.png)
+
+![Settings](pic/example_2.2.1_settings.png)
 
 ## 🆕 What's New in 2.1.1
 
