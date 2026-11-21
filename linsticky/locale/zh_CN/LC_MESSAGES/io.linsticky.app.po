@@ -301,3 +301,11 @@ msgstr "Markdown 工具栏"
 # linsticky/views/settings_view.py
 msgid "New notes are created in Markdown; existing notes are not changed"
 msgstr "新便笺以 Markdown 创建；现有便笺保持不变"
+
+# linsticky/views/settings_view.py:391
+msgid "Later"
+msgstr "稍后"
+
+# linsticky/views/settings_view.py:392
+msgid "Restart Now"
+msgstr "立即重启"

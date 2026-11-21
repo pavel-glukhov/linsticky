@@ -17,7 +17,7 @@ class CustomizationDialog(Gtk.Window):
         self.set_transient_for(parent_window)
         self.set_modal(True)
         self.set_title(builtins._("Customization"))
-        self.set_default_size(320, 560)
+        self.set_default_size(320, 520)
         self.set_resizable(False)
 
         # Use Adw.Window styling if available via CSS classes,
@@ -47,7 +47,13 @@ class CustomizationDialog(Gtk.Window):
         vbox.set_margin_end(16)
         scrolled.set_child(vbox)
 
-        # --- Regular toolbar ---
+        # --- Mode: decides how NEW notes are created ---
+        md_mode_box = self._list()
+        self._switch_row(md_mode_box, builtins._("Markdown mode"), self.md_enabled, self._on_md_enabled,
+                         subtitle=builtins._("New notes are created in Markdown; existing notes are not changed"))
+        vbox.append(md_mode_box)
+
+        # --- Regular toolbar (shown in the regular mode) ---
         options = [
             ("bold", builtins._("Bold")),
             ("italic", builtins._("Italic")),
@@ -57,29 +63,29 @@ class CustomizationDialog(Gtk.Window):
             ("text_color", builtins._("Text Color")),
             ("font_size", builtins._("Font Size")),
         ]
-        vbox.append(self._title(builtins._("Toolbar Options")))
+        self.regular_section = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
+        self.regular_section.append(self._title(builtins._("Toolbar Options")))
         self.switches = {}
         list_box = self._list()
         for key, label_text in options:
             self.switches[key] = self._switch_row(
                 list_box, label_text, self.formatting_config.get(key, True),
                 lambda state, k=key: self.formatting_config.__setitem__(k, state))
-        vbox.append(list_box)
+        self.regular_section.append(list_box)
+        vbox.append(self.regular_section)
 
-        # --- Markdown ---
-        vbox.append(self._title(builtins._("Markdown Toolbar")))
-        md_mode_box = self._list()
-        self._switch_row(md_mode_box, builtins._("Markdown mode"), self.md_enabled, self._on_md_enabled,
-                         subtitle=builtins._("New notes are created in Markdown; existing notes are not changed"))
-        vbox.append(md_mode_box)
-
-        self.md_list = self._list()
+        # --- Markdown toolbar (shown in the Markdown mode) ---
+        self.md_section = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
+        self.md_section.append(self._title(builtins._("Markdown Toolbar")))
+        md_list = self._list()
         self.md_switches = {}
         for button in MD_TOOLBAR:
             self.md_switches[button.key] = self._switch_row(
-                self.md_list, builtins._(button.tooltip), self.md_buttons[button.key],
+                md_list, builtins._(button.tooltip), self.md_buttons[button.key],
                 lambda state, k=button.key: self.md_buttons.__setitem__(k, state))
-        vbox.append(self.md_list)
+        self.md_section.append(md_list)
+        vbox.append(self.md_section)
+        self._sync_sections()
 
         # Save Button
         btn_save = Gtk.Button(label=builtins._("Save & Apply"))
@@ -122,6 +128,12 @@ class CustomizationDialog(Gtk.Window):
 
     def _on_md_enabled(self, state: bool):
         self.md_enabled = state
+        self._sync_sections()
+
+    def _sync_sections(self):
+        """Shows the toolbar options of the selected mode only."""
+        self.regular_section.set_visible(not self.md_enabled)
+        self.md_section.set_visible(self.md_enabled)
 
     def _on_save_clicked(self, button):
         """Saves configuration and triggers update in the main application."""

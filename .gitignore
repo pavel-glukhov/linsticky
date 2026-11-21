@@ -63,3 +63,7 @@ stickies.db
 
 # Local maintainer notes
 /RELEASING.md
+
+# Built packages
+*.snap
+*.deb

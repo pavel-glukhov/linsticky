@@ -360,3 +360,11 @@ msgstr "Панель Markdown"
 # linsticky/views/settings_view.py
 msgid "New notes are created in Markdown; existing notes are not changed"
 msgstr "Новые заметки создаются в Markdown; существующие не меняются"
+
+# linsticky/views/settings_view.py:391
+msgid "Later"
+msgstr "Позже"
+
+# linsticky/views/settings_view.py:392
+msgid "Restart Now"
+msgstr "Перезапустить"

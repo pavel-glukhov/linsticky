@@ -360,3 +360,11 @@ msgstr "Markdown araç çubuğu"
 # linsticky/views/settings_view.py
 msgid "New notes are created in Markdown; existing notes are not changed"
 msgstr "Yeni notlar Markdown ile oluşturulur; mevcut notlar değişmez"
+
+# linsticky/views/settings_view.py:391
+msgid "Later"
+msgstr "Daha sonra"
+
+# linsticky/views/settings_view.py:392
+msgid "Restart Now"
+msgstr "Şimdi yeniden başlat"

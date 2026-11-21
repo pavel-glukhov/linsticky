@@ -145,7 +145,21 @@ class SettingsView(Gtk.Box):
         list_box.append(palette_expander)
         # ------------------------
 
-        fmt_expander = Adw.ExpanderRow(title=_("Formatting Buttons"), subtitle=_("Choose which buttons to show on stickers"))
+        # --- Toolbar Settings ---
+        # The Markdown switch decides how NEW notes are created. Only the toolbar
+        # settings of the selected mode are shown (regular or Markdown).
+        md_config = self.config.get("markdown", {})
+        row_md = Adw.ActionRow(
+            title=_("Markdown mode"),
+            subtitle=_("New notes are created in Markdown; existing notes are not changed"),
+        )
+        self.md_switch = Gtk.Switch(valign=Gtk.Align.CENTER)
+        self.md_switch.set_active(md_config.get("enabled", False))
+        row_md.add_suffix(self.md_switch)
+        row_md.set_activatable_widget(self.md_switch)
+        list_box.append(row_md)
+
+        self.fmt_expander = fmt_expander = Adw.ExpanderRow(title=_("Formatting Buttons"), subtitle=_("Choose which buttons to show on stickers"))
         self.switches = {}
         buttons_to_toggle = [
             ("bold", _("Bold (B)")), ("italic", _("Italic (I)")),
@@ -164,20 +178,6 @@ class SettingsView(Gtk.Box):
             self.switches[key] = switch
         list_box.append(fmt_expander)
 
-        # --- Markdown Settings ---
-        # The switch only decides how NEW notes are created; the expander
-        # chooses the toolbar buttons of Markdown notes.
-        md_config = self.config.get("markdown", {})
-        row_md = Adw.ActionRow(
-            title=_("Markdown mode"),
-            subtitle=_("New notes are created in Markdown; existing notes are not changed"),
-        )
-        self.md_switch = Gtk.Switch(valign=Gtk.Align.CENTER)
-        self.md_switch.set_active(md_config.get("enabled", False))
-        row_md.add_suffix(self.md_switch)
-        row_md.set_activatable_widget(self.md_switch)
-        list_box.append(row_md)
-
         self.md_expander = Adw.ExpanderRow(title=_("Markdown Toolbar"),
                                            subtitle=_("Choose which buttons to show on stickers"))
         self.md_switches = {}
@@ -191,6 +191,9 @@ class SettingsView(Gtk.Box):
             self.md_switches[button.key] = check
         list_box.append(self.md_expander)
 
+        self.md_switch.connect("notify::active", lambda *_a: self._sync_toolbar_sections())
+        self._sync_toolbar_sections()
+
         footer = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, margin_top=20, margin_bottom=20, margin_start=20, margin_end=20)
         btn_save = Gtk.Button(label=_("Save Settings"), css_classes=["suggested-action"])
         btn_save.connect("clicked", self.save_settings)
@@ -198,6 +201,12 @@ class SettingsView(Gtk.Box):
         self.lbl_hint = Gtk.Label(label=_("Some changes may require a restart to apply."), css_classes=["caption"], margin_top=10)
         footer.append(self.lbl_hint)
         self.append(footer)
+
+    def _sync_toolbar_sections(self):
+        """Shows the toolbar settings of the selected mode only."""
+        markdown = self.md_switch.get_active()
+        self.fmt_expander.set_visible(not markdown)
+        self.md_expander.set_visible(markdown)
 
     def refresh_ui_from_config(self):
         """
@@ -379,6 +388,18 @@ class SettingsView(Gtk.Box):
             heading=_("Restart Required"),
             body=_("Some changes require an application restart to take full effect."),
         )
-        dialog.add_response("ok", _("OK"))
-        dialog.connect("response", lambda d, r: d.close())
+        dialog.add_response("later", _("Later"))
+        dialog.add_response("restart", _("Restart Now"))
+        dialog.set_response_appearance("restart", Adw.ResponseAppearance.SUGGESTED)
+        dialog.set_default_response("restart")
+
+        def on_response(d, response):
+            d.close()
+            if response == "restart":
+                # Closing the window only hides the app to the tray, so restart it here.
+                app = self.get_native().get_application()
+                if app is not None and hasattr(app, "restart"):
+                    app.restart()
+
+        dialog.connect("response", on_response)
         dialog.present()

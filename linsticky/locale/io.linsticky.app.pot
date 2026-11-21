@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-21 04:38+0000\n"
+"POT-Creation-Date: 2026-11-21 08:25+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -300,4 +300,12 @@ msgstr ""
 
 # linsticky/views/settings_view.py
 msgid "New notes are created in Markdown; existing notes are not changed"
+msgstr ""
+
+# linsticky/views/settings_view.py:391
+msgid "Later"
+msgstr ""
+
+# linsticky/views/settings_view.py:392
+msgid "Restart Now"
 msgstr ""

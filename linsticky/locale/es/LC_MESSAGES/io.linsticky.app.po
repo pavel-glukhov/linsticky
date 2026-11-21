@@ -362,3 +362,11 @@ msgstr "Barra de Markdown"
 # linsticky/views/settings_view.py
 msgid "New notes are created in Markdown; existing notes are not changed"
 msgstr "Las notas nuevas se crean en Markdown; las existentes no cambian"
+
+# linsticky/views/settings_view.py:391
+msgid "Later"
+msgstr "Más tarde"
+
+# linsticky/views/settings_view.py:392
+msgid "Restart Now"
+msgstr "Reiniciar ahora"

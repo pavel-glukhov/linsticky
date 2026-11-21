@@ -358,3 +358,11 @@ msgstr "Markdown құралдар тақтасы"
 # linsticky/views/settings_view.py
 msgid "New notes are created in Markdown; existing notes are not changed"
 msgstr "Жаңа жазбалар Markdown-да жасалады; бұрынғылары өзгермейді"
+
+# linsticky/views/settings_view.py:391
+msgid "Later"
+msgstr "Кейінірек"
+
+# linsticky/views/settings_view.py:392
+msgid "Restart Now"
+msgstr "Қазір қайта іске қосу"

@@ -94,6 +94,7 @@ class StickyApp(Adw.Application):
         self.app_manager = ApplicationManager(self, self.db, self.config)
         self.lock_file = None
         self._ui_ready = False
+        self.restart_requested = False
 
         # Register signal handlers for graceful shutdown (e.g., from systemctl or kill).
         GLib.unix_signal_add(GLib.PRIORITY_DEFAULT, signal.SIGTERM, self._on_signal_quit, None)
@@ -145,6 +146,15 @@ class StickyApp(Adw.Application):
                 print(f"WARNING: Failed to release lock file: {e}")
                 
         self.quit()
+
+    def restart(self):
+        """
+        Quits cleanly and starts the application again (see __main__).
+        Used to apply settings such as the language, which are read at startup.
+        """
+        self.restart_requested = True
+        self.quit_app()
+
 
 def activate_running_instance() -> bool:
     """
@@ -199,4 +209,11 @@ if __name__ == "__main__":
     
     app = StickyApp()
     app.lock_file = lock # Store lock to release it on exit
-    sys.exit(app.run(sys.argv))
+    status = app.run(sys.argv)
+    if app.restart_requested:
+        # The lock, database and tray were released in quit_app(); replace this
+        # process with a fresh one so the new settings are read from scratch.
+        print("SYSTEM: Restarting...")
+        sys.stdout.flush()
+        os.execv(sys.executable, [sys.executable] + sys.argv)
+    sys.exit(status)

@@ -56,7 +56,7 @@ LICENSE=$(jq -r '.license' "$APP_INFO_JSON")
 # ----------------------
 cat > "$USR_BIN_DIR/$APP_EXEC" <<EOL
 #!/bin/bash
-python3 "$APP_MAIN_SCRIPT"
+exec python3 "$APP_MAIN_SCRIPT" "\$@"
 EOL
 chmod +x "$USR_BIN_DIR/$APP_EXEC"
 
@@ -85,13 +85,22 @@ cat > "$DEBIAN_DIR/postinst" <<'EOL'
 if ! python3 -c "import gi" &>/dev/null; then
     echo "Warning: python3-gi is not installed. Please run: sudo apt install python3-gi gir1.2-gtk-4.0 gir1.2-adw-1"
 fi
+# The snap and the deb are separate installations with separate launchers.
+if command -v snap >/dev/null 2>&1 && snap list linsticky >/dev/null 2>&1; then
+    echo "Note: the LinSticky snap is installed too, so two LinSticky launchers will be shown."
+    echo "      Keep one of them, e.g.: sudo snap remove linsticky"
+fi
+exit 0
 EOL
 chmod +x "$DEBIAN_DIR/postinst"
 
 # ----------------------
 # Create desktop entry file
+# The file name must equal the application ID (GApplication / Wayland app_id),
+# otherwise GNOME cannot match the running window to this launcher: it shows a
+# second icon and keeps the launcher "starting" until a timeout.
 # ----------------------
-DESKTOP_FILE="$APPLICATIONS_DIR/$APP_EXEC.desktop"
+DESKTOP_FILE="$APPLICATIONS_DIR/$SERVICE_NAME.desktop"
 cat > "$DESKTOP_FILE" <<EOL
 [Desktop Entry]
 Name=$APP_NAME
@@ -113,7 +122,9 @@ METAINFO_FILE="$METAINFO_DIR/$SERVICE_NAME.metainfo.xml"
 cat > "$METAINFO_FILE" <<EOL
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="desktop-application">
-  <id>$APP_EXEC.desktop</id>
+  <id>$SERVICE_NAME</id>
+  <launchable type="desktop-id">$SERVICE_NAME.desktop</launchable>
+  <metadata_license>CC0-1.0</metadata_license>
   <name>$APP_NAME</name>
   <summary>$DESCRIPTION</summary>
   <developer_name>$AUTHOR</developer_name>

@@ -361,3 +361,11 @@ msgstr "Markdown-Werkzeugleiste"
 # linsticky/views/settings_view.py
 msgid "New notes are created in Markdown; existing notes are not changed"
 msgstr "Neue Notizen werden in Markdown erstellt; bestehende bleiben unverändert"
+
+# linsticky/views/settings_view.py:391
+msgid "Later"
+msgstr "Später"
+
+# linsticky/views/settings_view.py:392
+msgid "Restart Now"
+msgstr "Jetzt neu starten"
